@@ -1,0 +1,39 @@
+:host {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    grid-template-areas:
+        "menubar menubar menubar menubar"
+        "toolbar sidebar content preview"
+        "toolbar sidebar content terminal";
+    grid-template-columns: 48px 0.333fr 1fr 0.667fr;
+    grid-template-rows: 40px 2fr 1fr;
+}
+
+bde-editor-menubar {
+    grid-area: menubar;
+    background-color: #444444;
+}
+
+bde-editor-toolbar {
+    grid-area: toolbar;
+    background-color: #333333;
+}
+
+bde-editor-sidebar {
+    grid-area: sidebar;
+    min-width: 240px;
+    background-color: #252526;
+}
+
+bde-editor-content {
+    grid-area: content;
+}
+
+bde-editor-preview {
+    grid-area: preview;
+}
+
+bde-editor-terminal {
+    grid-area: terminal;
+}

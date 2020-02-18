@@ -1,7 +1,151 @@
 {
-  "version": 1,
-  "projects": {},
-  "cli": {
-    "defaultCollection": "@nrwl/workspace"
-  }
+    "version": 1,
+    "projects": {
+        "michelson-editor": {
+            "projectType": "application",
+            "schematics": {
+                "@schematics/angular:interceptor": {
+                    "skipTests": true
+                },
+                "@schematics/angular:component": {
+                    "inlineTemplate": true,
+                    "skipTests": true
+                },
+                "@nrwl/angular:class": {
+                    "skipTests": true
+                },
+                "@nrwl/angular:component": {
+                    "inlineTemplate": true,
+                    "skipTests": true
+                },
+                "@nrwl/angular:directive": {
+                    "skipTests": true
+                },
+                "@nrwl/angular:guard": {
+                    "skipTests": true
+                },
+                "@nrwl/angular:module": {
+                    "skipTests": true
+                },
+                "@nrwl/angular:pipe": {
+                    "skipTests": true
+                },
+                "@nrwl/angular:service": {
+                    "skipTests": true
+                }
+            },
+            "root": "apps/michelson-editor",
+            "sourceRoot": "apps/michelson-editor/src",
+            "prefix": "bde",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "outputPath": "dist/apps/michelson-editor",
+                        "index": "apps/michelson-editor/src/index.html",
+                        "main": "apps/michelson-editor/src/main.ts",
+                        "polyfills": "apps/michelson-editor/src/polyfills.ts",
+                        "tsConfig": "apps/michelson-editor/tsconfig.app.json",
+                        "aot": true,
+                        "assets": [
+                            "apps/michelson-editor/src/favicon.ico",
+                            "apps/michelson-editor/src/assets",
+                            {
+                                "glob": "**",
+                                "input": "node_modules/monaco-editor/min/vs",
+                                "output": "vs"
+                            },
+                            {
+                                "glob": "**",
+                                "input": "node_modules/monaco-editor/min-maps",
+                                "output": "min-maps"
+                            }
+                        ],
+                        "styles": ["apps/michelson-editor/src/styles.css"],
+                        "scripts": []
+                    },
+                    "configurations": {
+                        "production": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "apps/michelson-editor/src/environments/environment.ts",
+                                    "with": "apps/michelson-editor/src/environments/environment.prod.ts"
+                                }
+                            ],
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "extractCss": true,
+                            "namedChunks": false,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "2mb",
+                                    "maximumError": "5mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "6kb",
+                                    "maximumError": "10kb"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "browserTarget": "michelson-editor:build"
+                    },
+                    "configurations": {
+                        "production": {
+                            "browserTarget": "michelson-editor:build:production"
+                        }
+                    }
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "michelson-editor:build"
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "apps/michelson-editor/tsconfig.app.json",
+                            "apps/michelson-editor/tsconfig.spec.json"
+                        ],
+                        "exclude": ["**/node_modules/**", "!apps/michelson-editor/**"]
+                    }
+                },
+                "test": {
+                    "builder": "@nrwl/jest:jest",
+                    "options": {
+                        "jestConfig": "apps/michelson-editor/jest.config.js",
+                        "tsConfig": "apps/michelson-editor/tsconfig.spec.json",
+                        "passWithNoTests": true,
+                        "setupFile": "apps/michelson-editor/src/test-setup.ts"
+                    }
+                }
+            }
+        }
+    },
+    "cli": {
+        "defaultCollection": "@nrwl/angular",
+        "analytics": false
+    },
+    "schematics": {
+        "@nrwl/angular:application": {
+            "unitTestRunner": "jest",
+            "e2eTestRunner": "protractor"
+        },
+        "@nrwl/angular:library": {
+            "unitTestRunner": "jest"
+        }
+    },
+    "defaultProject": "michelson-editor"
 }
