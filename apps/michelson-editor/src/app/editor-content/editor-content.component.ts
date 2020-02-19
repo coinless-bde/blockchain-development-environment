@@ -18,7 +18,7 @@ declare var window: Window
     providers: [HOST_EFFECTS],
 })
 export class EditorContentComponent {
-    editor: IStandaloneCodeEditor
+    editor?: IStandaloneCodeEditor
 
     private readonly nativeElement: HTMLElement
 
@@ -55,7 +55,7 @@ export class EditorContentComponent {
         })
     }
 
-    createEditor(monaco): IStandaloneCodeEditor {
+    createEditor(monaco: any): IStandaloneCodeEditor {
         const langId = "michelson"
         monaco.languages.register({
             id: langId,
@@ -63,7 +63,7 @@ export class EditorContentComponent {
 
         // register the language here
 
-        const instance = monaco.editor.create(this.nativeElement, {
+        return monaco.editor.create(this.nativeElement, {
             value: `
 parameter (or
              (or
@@ -176,9 +176,9 @@ code {
      }
 `,
             language: "michelson",
+            theme: "vs-dark",
             automaticLayout: true,
+            minimap: false,
         })
-
-        return instance
     }
 }

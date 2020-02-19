@@ -3,37 +3,6 @@
     "projects": {
         "michelson-editor": {
             "projectType": "application",
-            "schematics": {
-                "@schematics/angular:interceptor": {
-                    "skipTests": true
-                },
-                "@schematics/angular:component": {
-                    "inlineTemplate": true,
-                    "skipTests": true
-                },
-                "@nrwl/angular:class": {
-                    "skipTests": true
-                },
-                "@nrwl/angular:component": {
-                    "inlineTemplate": true,
-                    "skipTests": true
-                },
-                "@nrwl/angular:directive": {
-                    "skipTests": true
-                },
-                "@nrwl/angular:guard": {
-                    "skipTests": true
-                },
-                "@nrwl/angular:module": {
-                    "skipTests": true
-                },
-                "@nrwl/angular:pipe": {
-                    "skipTests": true
-                },
-                "@nrwl/angular:service": {
-                    "skipTests": true
-                }
-            },
             "root": "apps/michelson-editor",
             "sourceRoot": "apps/michelson-editor/src",
             "prefix": "bde",
@@ -61,7 +30,10 @@
                                 "output": "min-maps"
                             }
                         ],
-                        "styles": ["apps/michelson-editor/src/styles.css"],
+                        "styles": [
+                            "apps/michelson-editor/src/styles.css",
+                            "apps/michelson-editor/src/assets/codicon.css"
+                        ],
                         "scripts": []
                     },
                     "configurations": {
@@ -132,6 +104,34 @@
                     }
                 }
             }
+        },
+        "vs-components": {
+            "projectType": "library",
+            "root": "libs/vs-components",
+            "sourceRoot": "libs/vs-components/src",
+            "prefix": "bde",
+            "architect": {
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "libs/vs-components/tsconfig.lib.json",
+                            "libs/vs-components/tsconfig.spec.json"
+                        ],
+                        "exclude": ["**/node_modules/**", "!libs/vs-components/**"]
+                    }
+                },
+                "test": {
+                    "builder": "@nrwl/jest:jest",
+                    "options": {
+                        "jestConfig": "libs/vs-components/jest.config.js",
+                        "tsConfig": "libs/vs-components/tsconfig.spec.json",
+                        "passWithNoTests": true,
+                        "setupFile": "libs/vs-components/src/test-setup.ts"
+                    }
+                }
+            },
+            "schematics": {}
         }
     },
     "cli": {
@@ -145,6 +145,41 @@
         },
         "@nrwl/angular:library": {
             "unitTestRunner": "jest"
+        },
+        "@schematics/angular:interceptor": {
+            "skipTests": true
+        },
+        "@schematics/angular:component": {
+            "inlineTemplate": true,
+            "skipTests": true,
+            "changeDetection": "OnPush"
+        },
+        "@schematics/angular:directive": {
+            "skipTests": true,
+            "changeDetection": "OnPush"
+        },
+        "@nrwl/angular:class": {
+            "skipTests": true
+        },
+        "@nrwl/angular:component": {
+            "inlineTemplate": true,
+            "skipTests": true,
+            "changeDetection": "OnPush"
+        },
+        "@nrwl/angular:directive": {
+            "skipTests": true
+        },
+        "@nrwl/angular:guard": {
+            "skipTests": true
+        },
+        "@nrwl/angular:module": {
+            "skipTests": true
+        },
+        "@nrwl/angular:pipe": {
+            "skipTests": true
+        },
+        "@nrwl/angular:service": {
+            "skipTests": true
         }
     },
     "defaultProject": "michelson-editor"

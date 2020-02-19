@@ -1,18 +1,21 @@
 {
-  "npmScope": "michelson-editor",
-  "implicitDependencies": {
-    "angular.json": "*",
-    "package.json": {
-      "dependencies": "*",
-      "devDependencies": "*"
+    "npmScope": "michelson-editor",
+    "implicitDependencies": {
+        "angular.json": "*",
+        "package.json": {
+            "dependencies": "*",
+            "devDependencies": "*"
+        },
+        "tsconfig.json": "*",
+        "tslint.json": "*",
+        "nx.json": "*"
     },
-    "tsconfig.json": "*",
-    "tslint.json": "*",
-    "nx.json": "*"
-  },
-  "projects": {
-    "michelson-editor": {
-      "tags": []
+    "projects": {
+        "michelson-editor": {
+            "tags": []
+        },
+        "vs-components": {
+            "tags": []
+        }
     }
-  }
 }

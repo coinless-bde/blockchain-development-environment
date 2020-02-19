@@ -1,19 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core"
 
 @Component({
-  selector: 'bde-editor-toolbar',
-  template: `
-    <p>
-      editor-toolbar works!
-    </p>
-  `,
-  styleUrls: ['./editor-toolbar.component.css']
+    selector: "bde-editor-toolbar",
+    template: `
+        <p>
+            editor-toolbar works!
+        </p>
+    `,
+    styleUrls: ["./editor-toolbar.component.css"],
 })
 export class EditorToolbarComponent implements OnInit {
+    constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+    ngOnInit(): void {}
 }

@@ -1,3 +1,37 @@
 :host {
-    display: block;
+    display: flex;
+    align-items: center;
+}
+
+.document {
+    display: flex;
+    margin-left: 40px;
+}
+
+.documentAuthor {
+    font: var(--font-body-1);
+}
+
+.documentSeparator {
+    font: var(--font-body-1);
+}
+
+.documentSeparator:before,
+.documentSeparator:after {
+    display: inline-block;
+    content: "\00a0";
+}
+
+.documentTitle {
+    font: var(--font-heading-3);
+}
+
+.network {
+    display: flex;
+    align-items: center;
+    margin: 0 24px;
+}
+
+.networkAddress {
+    margin-left: 24px;
 }

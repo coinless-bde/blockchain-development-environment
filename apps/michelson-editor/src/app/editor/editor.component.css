@@ -36,4 +36,5 @@ bde-editor-preview {
 
 bde-editor-terminal {
     grid-area: terminal;
+    background-color: #1e1e1e;
 }

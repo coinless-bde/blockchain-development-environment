@@ -1,4 +1,152 @@
+@import "~@angular/cdk/overlay-prebuilt.css";
+
 /* You can add global styles to this file, and also import other style files */
-html, body {
+html,
+body {
     margin: 0;
+    color: #ffffff;
+    background-color: #1e1e1e;
+}
+
+:root {
+    --font-heading-1: normal 600 26px/31px "SF Pro Text", -apple-system, system, sans-serif;
+    --font-heading-2: normal 500 14px/17px "SF Pro Text", -apple-system, system, sans-serif;
+    --font-heading-3: normal 800 13px/16px "SF Pro Text", -apple-system, system, sans-serif;
+    --font-heading-4: uppercase bold 11px/13px "SF Pro Text", -apple-system, system, sans-serif;
+    --font-heading-5: uppercase 500 11px/13px "SF Pro Text", -apple-system, system, sans-serif;
+    --font-heading-6: normal 800 11px/13px "SF Pro Text", -apple-system, system, sans-serif;
+
+    --font-body-1: normal 500 13px/16px "SF Pro Text", -apple-system, system, sans-serif;
+    --font-body-2: normal 500 12px/14px "SF Pro Text", -apple-system, system, sans-serif;
+
+    --font-label-1: normal 500 14px/22px "SF Pro Text", -apple-system, system, sans-serif;
+    --font-label-2: normal bold 12px/19px "SF Pro Text", -apple-system, system, sans-serif;
+    --font-label-3: normal 500 11px/13px "SF Pro Text", -apple-system, system, sans-serif;
+    --font-label-4: normal bold 9px/11px "SF Pro Text", -apple-system, system, sans-serif;
+
+    --font-code-1: normal normal 12px/18px Menlo, monospace;
+    --font-code-2: normal bold 12px/18px Menlo, monospace;
+
+    --font-codicon: normal normal 16px/16px codicon;
+    --font-seti: normal normal 20px/20px seti;
+
+    --color-base-01: #ffffff;
+    --color-base-02: #f0f0f0;
+    --color-base-03: #e7e7e7;
+    --color-base-04: #e5e5e5;
+    --color-base-05: #d4d4d4;
+    --color-base-06: #cccccc;
+    --color-base-07: #c6c6c6;
+    --color-base-08: #bbbbbb;
+    --color-base-09: #a0a0a0;
+    --color-base-10: #808080;
+    --color-base-11: #7f7f7f;
+    --color-base-12: #606060;
+    --color-base-13: #454545;
+    --color-base-14: #3c3c3c;
+    --color-base-15: #424750;
+    --color-base-16: #3a3d41;
+    --color-base-17: #333333;
+    --color-base-18: #303031;
+    --color-base-19: #292929;
+    --color-base-20: #252526;
+    --color-base-21: #1e1e1e;
+    --color-base-22: #000000;
+
+    --color-blue-01: #75beff;
+    --color-blue-02: #40a6ff;
+    --color-blue-03: #3399cc;
+    --color-blue-04: #3794ff;
+    --color-blue-05: #0097fb;
+    --color-blue-06: #007acc;
+    --color-blue-07: #0e639c;
+    --color-blue-08: #264f78;
+    --color-blue-09: #094771;
+    --color-blue-10: #062f4a;
+    --color-blue-11: #001f33;
+
+    --color-red-01: #75beff;
+    --color-red-02: #40a6ff;
+    --color-red-03: #3794ff;
+    --color-red-04: #264f78;
+
+    --color-green-01: #73c991;
+    --color-green-02: #40c8ae;
+    --color-green-03: #16825d;
+    --color-green-04: #327e36;
+
+    --color-purple-01: #6c6cc4;
+    --color-purple-02: #bc3fbc;
+    --color-purple-03: #68217a;
+
+    --color-yellow-01: #d7ba7d;
+    --color-yellow-02: #cca700;
+    --color-yellow-03: #b89500;
+    --color-yellow-04: #ffff00;
+
+    --color-orange-01: #cc6633;
+    --color-orange-02: #ea5c00;
+
+    --color-seti-blue: #519aba;
+    --color-seti-green: #8dc149;
+    --color-seti-orange: #e37933;
+    --color-seti-pink: #f55385;
+    --color-seti-red: #cc3e44;
+    --color-seti-steel: #7494a3;
+    --color-seti-yellow: #cbcb41;
+}
+
+h1 {
+    font: var(--font-heading-1);
+}
+
+h2 {
+    font: var(--font-heading-2);
+}
+
+h3 {
+    font: var(--font-heading-3);
+}
+
+h4 {
+    font: var(--font-heading-4);
+}
+
+h5 {
+    font: var(--font-heading-5);
+}
+
+h6 {
+    font: var(--font-heading-6);
+}
+
+p,
+ul,
+ol,
+div,
+input,
+textarea,
+select,
+label {
+    font: var(--font-body-1);
+}
+
+code,
+pre {
+    font: var(--font-code-1);
+}
+
+strong code,
+strong pre,
+code strong,
+pre strong {
+    font: var(--font-code-2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border: none;
+    box-shadow: none;
 }

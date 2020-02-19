@@ -1,19 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core"
 
 @Component({
-  selector: 'bde-editor-sidebar',
-  template: `
-    <p>
-      editor-sidebar works!
-    </p>
-  `,
-  styleUrls: ['./editor-sidebar.component.css']
+    selector: "bde-editor-sidebar",
+    template: `
+        <p>
+            editor-sidebar works!
+        </p>
+    `,
+    styleUrls: ["./editor-sidebar.component.css"],
 })
 export class EditorSidebarComponent implements OnInit {
+    constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+    ngOnInit(): void {}
 }
