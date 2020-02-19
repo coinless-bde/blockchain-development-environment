@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core"
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core"
 
 @Component({
     selector: "bde-editor-terminal",
@@ -22,6 +22,7 @@ import { Component, OnInit } from "@angular/core"
         </div>
     `,
     styleUrls: ["./editor-terminal.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditorTerminalComponent implements OnInit {
     constructor() {}

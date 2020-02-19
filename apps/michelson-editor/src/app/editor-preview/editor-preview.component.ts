@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core"
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core"
 
 @Component({
     selector: "bde-editor-preview",
@@ -6,6 +6,7 @@ import { Component, OnInit } from "@angular/core"
 <!--        <img src="preview/logo.png" alt="" />-->
     `,
     styleUrls: ["./editor-preview.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditorPreviewComponent implements OnInit {
     constructor() {}

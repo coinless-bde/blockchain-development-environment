@@ -1,4 +1,4 @@
-import { Component } from "@angular/core"
+import { ChangeDetectionStrategy, Component } from "@angular/core"
 
 @Component({
     selector: "bde-editor",
@@ -12,6 +12,7 @@ import { Component } from "@angular/core"
         <bde-editor-terminal></bde-editor-terminal>
     `,
     styleUrls: ["./editor.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditorComponent {
     constructor() {}

@@ -1,0 +1,30 @@
+:host {
+    display: flex;
+    align-items: center;
+    background: var(--color-base-20);
+}
+
+.tab {
+    height: 100%;
+    min-width: 128px;
+    font: var(--font-body-1);
+    background: var(--color-base-19);
+}
+
+.tab.is-selected {
+    background-color: var(--color-base-21);
+}
+
+.tab > span {
+    margin: 0 8px 0 4px;
+}
+
+.tab > bde-codicon:last-child {
+    width: auto;
+    margin-left: auto;
+}
+
+.action {
+    height: 100%;
+    margin-left: auto;
+}

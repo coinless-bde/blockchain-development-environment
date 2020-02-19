@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core"
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core"
 
 @Component({
     selector: "bde-editor-toolbar",
@@ -11,6 +11,7 @@ import { Component, OnInit } from "@angular/core"
         </bde-button>
     `,
     styleUrls: ["./editor-toolbar.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditorToolbarComponent implements OnInit {
     constructor() {}

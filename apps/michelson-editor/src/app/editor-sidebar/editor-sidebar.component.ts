@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core"
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core"
 
 @Component({
     selector: "bde-editor-sidebar",
@@ -30,6 +30,7 @@ import { Component, OnInit } from "@angular/core"
         </div>
     `,
     styleUrls: ["./editor-sidebar.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditorSidebarComponent implements OnInit {
     constructor() {}

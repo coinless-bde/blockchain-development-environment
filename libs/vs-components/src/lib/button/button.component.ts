@@ -16,7 +16,7 @@ import { Button, ButtonLike, PressedEvent } from "./button"
     `,
     styleUrls: ["./button.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [effects(Button)],
+    providers: [effects(Button, { markDirty: true })],
 })
 export class ButtonComponent implements ButtonLike {
     @Input()

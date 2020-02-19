@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostBinding, Input, Output } from "@angular/core"
+import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, Output } from "@angular/core"
 import { Connect, effects } from "ng-effects"
 import { OptionLike } from "./interfaces"
 import { Button, PressedEvent } from "../button/button"
@@ -10,8 +10,9 @@ import { Option } from "./option"
         <ng-content></ng-content>
     `,
     styleUrls: ["./option.component.css"],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
-        effects([Option, Button]),
+        effects([Option, Button], { markDirty: true }),
         {
             provide: OptionLike,
             useExisting: OptionComponent,

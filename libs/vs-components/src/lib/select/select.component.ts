@@ -48,7 +48,7 @@ import { Dropdown } from "./dropdown"
     styleUrls: ["./select.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
-        effects([Select, Button, Dropdown]),
+        effects([Select, Button, Dropdown], { markDirty: true }),
         {
             provide: SelectLike,
             useExisting: SelectComponent,
