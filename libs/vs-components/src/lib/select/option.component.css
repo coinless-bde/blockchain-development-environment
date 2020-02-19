@@ -1,0 +1,39 @@
+:host {
+    --highlight-color: var(--color-blue-07);
+    --fill-color: var(--color-base-16);
+    --text-color: var(--color-base-01);
+
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    padding: 6px 11px;
+    opacity: 0.8;
+    color: var(--text-color);
+    background-color: var(--fill-color);
+    transition: opacity 0.3s, color 0.3s;
+    outline: none;
+}
+
+:host.is-hover {
+    opacity: 1;
+}
+
+:host:before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border: 1px solid var(--highlight-color);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+:host.is-focus:before {
+    opacity: 1;
+}
+
+:host.is-disabled {
+    opacity: 0.64;
+}
