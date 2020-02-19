@@ -7,10 +7,10 @@ import {
     Output,
 } from "@angular/core"
 import { Connect, effects } from "ng-effects"
-import { Button, ButtonLike } from "./button"
+import { Button, ButtonLike, PressedEvent } from "./button"
 
 @Component({
-    selector: "bde-button, [bde-button]",
+    selector: "bde-button, [bde-button], [bde-flush-button]",
     template: `
         <ng-content></ng-content>
     `,
@@ -21,13 +21,14 @@ import { Button, ButtonLike } from "./button"
 export class ButtonComponent implements ButtonLike {
     @Input()
     @HostBinding("attr.color")
-    public color: "primary" | "secondary"
+    public color: "primary" | "secondary" | "none"
 
     @Input()
+    @HostBinding("class.is-disabled")
     public disabled: boolean
 
-    @Output()
-    public pressed: EventEmitter<MouseEvent>
+    @HostBinding("class.is-active")
+    public active: boolean
 
     @HostBinding("class.is-hover")
     public hover: boolean
@@ -35,15 +36,15 @@ export class ButtonComponent implements ButtonLike {
     @HostBinding("class.is-focus")
     public focus: boolean
 
-    @HostBinding("class.is-active")
-    public active: boolean
+    @Output()
+    public readonly pressed: EventEmitter<PressedEvent>
 
     constructor(connect: Connect) {
         this.disabled = false
         this.hover = false
         this.focus = false
         this.active = false
-        this.color = "primary"
+        this.color = "none"
         this.pressed = new EventEmitter()
         connect(this)
     }

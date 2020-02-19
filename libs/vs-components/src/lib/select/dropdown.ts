@@ -1,10 +1,11 @@
-import { ElementRef, EmbeddedViewRef, Injectable, OnDestroy, ViewContainerRef } from "@angular/core"
+import { ElementRef, Injectable, OnDestroy, Renderer2, ViewContainerRef } from "@angular/core"
 import { Effect, State } from "ng-effects"
 import { DropdownLike } from "./interfaces"
-import { filter, map, mapTo, switchMap, switchMapTo } from "rxjs/operators"
-import { query } from "../utils"
+import { filter, map, mapTo, switchMapTo } from "rxjs/operators"
+import { fromEvents, query } from "../utils"
 import { TemplatePortal } from "@angular/cdk/portal"
 import { Overlay, OverlayRef } from "@angular/cdk/overlay"
+import { merge } from "rxjs"
 
 @Injectable()
 export class Dropdown implements OnDestroy {
@@ -38,7 +39,14 @@ export class Dropdown implements OnDestroy {
 
     @Effect("expanded")
     public backdropClick(_: State<DropdownLike>) {
-        return this.overlay.backdropClick().pipe(mapTo(false))
+        const { element, injector } = this.viewContainer
+        const events = fromEvents(
+            element.nativeElement,
+            { "keydown.esc": "keydown" },
+            injector.get(Renderer2),
+        )
+
+        return merge(this.overlay.backdropClick(), events["keydown.esc"]).pipe(mapTo(false))
     }
 
     @Effect()

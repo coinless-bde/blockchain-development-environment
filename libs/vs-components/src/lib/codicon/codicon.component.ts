@@ -1,20 +1,16 @@
-import {
-    Component,
-    OnInit,
-    ChangeDetectionStrategy,
-    Directive,
-    HostBinding,
-    Input,
-} from "@angular/core"
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core"
 
-@Directive({
+@Component({
     // tslint:disable-next-line:directive-selector
     selector: "bde-codicon",
+    template: ``,
+    styleUrls: ["./codicon.component.css"],
     host: {
         "[class]": "'codicon codicon-' + icon",
     },
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CodiconDirective {
+export class CodiconComponent {
     @Input()
     icon?: Codicon
 }

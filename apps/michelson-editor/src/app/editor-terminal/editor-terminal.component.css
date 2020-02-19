@@ -1,0 +1,57 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0 8px 12px;
+    border-top: 1px solid var(--color-base-18);
+    border-left: 1px solid var(--color-base-18);
+}
+
+.line {
+    color: var(--color-base-03);
+    font: var(--font-code-1);
+}
+
+.header {
+    display: flex;
+    height: 50px;
+    justify-content: space-between;
+}
+
+.tabs {
+    display: flex;
+    align-items: center;
+}
+
+.tab {
+    height: 32px;
+    margin: 0 12px;
+    font: var(--font-heading-5);
+}
+
+.tab:not(.is-hover) {
+    opacity: 0.4;
+}
+
+.tab:first-child {
+    opacity: 1;
+    border-bottom: 2px solid var(--color-base-03);
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+}
+
+.action {
+    width: 32px;
+    height: 32px;
+}
+
+.output {
+    padding: 12px;
+}
+
+.line {
+    color: var(--color-base-06);
+}

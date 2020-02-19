@@ -11,12 +11,17 @@
     font: var(--font-label-3);
     transition: border-color 0.3s;
     outline: none;
+    cursor: pointer;
 }
 
 :host.is-focus,
 :host.is-active,
 :host.is-expanded {
     border-color: var(--highlight-color);
+}
+
+:host.is-disabled {
+    cursor: not-allowed;
 }
 
 .chevron {

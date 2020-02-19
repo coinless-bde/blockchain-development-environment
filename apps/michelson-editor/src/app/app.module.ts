@@ -10,7 +10,8 @@ import { EditorToolbarComponent } from "./editor-toolbar/editor-toolbar.componen
 import { EditorMenubarComponent } from "./editor-menubar/editor-menubar.component"
 import { EditorPreviewComponent } from "./editor-preview/editor-preview.component"
 import { EditorTerminalComponent } from "./editor-terminal/editor-terminal.component"
-import { ButtonModule, SelectModule } from "@michelson-editor/vs-components"
+import { ButtonModule, CodiconModule, SelectModule } from "@michelson-editor/vs-components"
+import { EditorTabsComponent } from "./editor-tabs/editor-tabs.component"
 
 @NgModule({
     declarations: [
@@ -22,12 +23,14 @@ import { ButtonModule, SelectModule } from "@michelson-editor/vs-components"
         EditorMenubarComponent,
         EditorPreviewComponent,
         EditorTerminalComponent,
+        EditorTabsComponent,
     ],
     imports: [
         BrowserModule,
         RouterModule.forRoot([], { initialNavigation: "enabled" }),
         ButtonModule,
         SelectModule,
+        CodiconModule,
     ],
     providers: [],
     bootstrap: [AppComponent],

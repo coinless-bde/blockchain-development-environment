@@ -1,4 +1,4 @@
-import { ElementRef, Injectable, OnDestroy, Renderer2, ViewContainerRef } from "@angular/core"
+import { ElementRef, Injectable, Renderer2 } from "@angular/core"
 import { Context, Effect, State } from "ng-effects"
 import { merge, Subject } from "rxjs"
 import { disable, EventMap, fromEvents, toggle } from "../utils"
@@ -11,6 +11,10 @@ enum ButtonEvents {
     "pointerup",
     "focus",
     "blur",
+    "keydown.enter" = "keydown",
+    "keydown.space" = "keydown",
+    "keyup.enter" = "keyup",
+    "keyup.space" = "keyup",
 }
 
 export interface ButtonLike {
@@ -18,17 +22,19 @@ export interface ButtonLike {
     focus: boolean
     active: boolean
     disabled: boolean
-    pressed: Subject<MouseEvent>
+    pressed: Subject<MouseEvent | KeyboardEvent>
 }
+
+export type PressedEvent = MouseEvent | KeyboardEvent
 
 @Injectable()
 export class Button {
     private readonly events: EventMap<typeof ButtonEvents>
     private readonly nativeElement: HTMLElement
 
-    constructor(elementRef: ElementRef<HTMLElement>) {
+    constructor(elementRef: ElementRef<HTMLElement>, renderer: Renderer2) {
         const { nativeElement } = elementRef
-        this.events = fromEvents(nativeElement, ButtonEvents)
+        this.events = fromEvents(nativeElement, ButtonEvents, renderer)
         this.nativeElement = nativeElement
     }
 
@@ -53,15 +59,24 @@ export class Button {
     @Effect("active")
     public active(state: State<ButtonLike>) {
         const events = this.events
-        const on = events.pointerdown
-        const off = merge(events.pointerup, events.pointerleave)
+        const on = merge(events.pointerdown, events["keydown.enter"], events["keydown.space"])
+        const off = merge(
+            events.pointerup,
+            events.pointerleave,
+            events.blur,
+            events["keyup.enter"],
+            events["keyup.space"],
+        )
 
         return toggle(on, off).pipe(disable(state.disabled))
     }
 
     @Effect()
     public click({}, context: Context<ButtonLike>) {
-        return this.events.click.subscribe(event => {
+        const events = this.events
+        const pressed = merge(events.click, events["keydown.enter"], events["keydown.space"])
+        return pressed.subscribe(event => {
+            event.preventDefault()
             if (!context.disabled) {
                 context.pressed.next(event)
             }

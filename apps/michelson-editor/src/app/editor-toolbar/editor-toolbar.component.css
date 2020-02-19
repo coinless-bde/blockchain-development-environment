@@ -1,0 +1,30 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--color-base-01);
+}
+
+bde-button {
+    width: 48px;
+    height: 48px;
+    margin: 8px 0;
+    justify-content: center;
+}
+
+bde-button:first-child {
+    margin-top: 0;
+}
+
+bde-button:not(.is-hover) {
+    opacity: 0.4;
+}
+
+bde-button.is-selected {
+    opacity: 1;
+    border-left: 2px solid var(--color-base-01);
+}
+
+:host bde-codicon {
+    font-size: 24px;
+}

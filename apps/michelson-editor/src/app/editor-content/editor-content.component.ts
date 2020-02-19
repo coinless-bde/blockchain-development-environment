@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, ElementRef } from "@angular/core"
 import { Connect, Effect, HOST_EFFECTS, State } from "ng-effects"
 import { editor } from "monaco-editor"
 import { Observable } from "rxjs"
-import * as IMonaco from "monaco-editor"
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor
 
 interface Window {
@@ -56,7 +55,7 @@ export class EditorContentComponent {
         })
     }
 
-    createEditor(monaco: typeof IMonaco): IStandaloneCodeEditor {
+    createEditor(monaco: any): IStandaloneCodeEditor {
         const langId = "michelson"
         const macros = "keyword"
         monaco.languages.register({
@@ -444,7 +443,7 @@ IF_LEFT
             theme: "vs-dark",
             automaticLayout: true,
             minimap: {
-                enabled: false
+                enabled: false,
             },
         })
     }

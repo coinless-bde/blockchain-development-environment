@@ -1,21 +1,28 @@
-import { combineLatest, fromEvent, merge, MonoTypeOperatorFunction, Observable } from "rxjs"
+import { combineLatest, fromEventPattern, merge, MonoTypeOperatorFunction, Observable } from "rxjs"
 import { filter, map, mapTo, startWith, switchMap } from "rxjs/operators"
-import { QueryList } from "@angular/core"
+import { QueryList, Renderer2 } from "@angular/core"
 
 export type HTMLElementEventNames = keyof HTMLElementEventMap
 
 export type EventMap<T extends { [key: string]: any }> = {
-    [key in keyof T]: Observable<
-        key extends HTMLElementEventNames ? HTMLElementEventMap[key] : T[key]
-    >
+    [key in keyof T]: key extends HTMLElementEventNames
+        ? Observable<HTMLElementEventMap[key]>
+        : Observable<HTMLElementEventMap[T[key]]>
 }
 
-export function fromEvents<T>(element: HTMLElement, eventNames: T): EventMap<T> {
+export function fromEvents<T extends { [key: string]: string | number }>(
+    element: HTMLElement,
+    eventMap: T,
+    renderer: Renderer2,
+): EventMap<T> {
     const observer: any = {}
-    return Object.keys(eventNames)
+    return Object.keys(eventMap)
         .filter(eventName => isNaN(Number(eventName)))
-        .reduce((acc, eventName) => {
-            acc[eventName] = fromEvent(element, eventName)
+        .reduce((acc, eventKey) => {
+            function addEvent(handler: (event: any) => boolean | void) {
+                return renderer.listen(element, eventKey, handler)
+            }
+            acc[eventKey] = fromEventPattern(addEvent)
             return acc
         }, observer)
 }

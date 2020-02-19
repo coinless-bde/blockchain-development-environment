@@ -63,10 +63,11 @@ export class SelectComponent<T> implements SelectLike<T>, DropdownLike {
     public selected?: T
 
     @Input()
-    public disabled: boolean
+    public placeholder: string
 
     @Input()
-    public placeholder: string
+    @HostBinding("class.is-disabled")
+    public disabled: boolean
 
     @HostBinding("class.is-expanded")
     public expanded: boolean

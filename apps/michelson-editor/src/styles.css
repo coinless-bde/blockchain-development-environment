@@ -12,8 +12,10 @@ body {
     --font-heading-1: normal 600 26px/31px "SF Pro Text", -apple-system, system, sans-serif;
     --font-heading-2: normal 500 14px/17px "SF Pro Text", -apple-system, system, sans-serif;
     --font-heading-3: normal 800 13px/16px "SF Pro Text", -apple-system, system, sans-serif;
-    --font-heading-4: uppercase bold 11px/13px "SF Pro Text", -apple-system, system, sans-serif;
-    --font-heading-5: uppercase 500 11px/13px "SF Pro Text", -apple-system, system, sans-serif;
+    --font-heading-4: bold 11px/13px "SF Pro Text", -apple-system, system, sans-serif;
+    --font-heading-transform-4: uppercase;
+    --font-heading-5: normal 500 11px/13px "SF Pro Text", -apple-system, system, sans-serif;
+    --font-heading-transform-5: uppercase;
     --font-heading-6: normal 800 11px/13px "SF Pro Text", -apple-system, system, sans-serif;
 
     --font-body-1: normal 500 13px/16px "SF Pro Text", -apple-system, system, sans-serif;
@@ -110,10 +112,12 @@ h3 {
 
 h4 {
     font: var(--font-heading-4);
+    text-transform: var(--font-heading-transform-4);
 }
 
 h5 {
     font: var(--font-heading-5);
+    text-transform: var(--font-heading-transform-5);
 }
 
 h6 {
@@ -149,4 +153,8 @@ pre strong {
     box-sizing: border-box;
     border: none;
     box-shadow: none;
+}
+
+.cdk-overlay-backdrop {
+    background: none;
 }

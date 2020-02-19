@@ -1,8 +1,4 @@
-import { Directive, Optional, TemplateRef } from "@angular/core"
-
-interface LabelContext<TSelectedValue = any> {
-    $implicit: TSelectedValue
-}
+import { Directive } from "@angular/core"
 
 @Directive({
     // tslint:disable-next-line:directive-selector

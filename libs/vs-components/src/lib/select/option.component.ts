@@ -1,7 +1,7 @@
-import { Component, Directive, EventEmitter, HostBinding, Input, Output } from "@angular/core"
+import { Component, EventEmitter, HostBinding, Input, Output } from "@angular/core"
 import { Connect, effects } from "ng-effects"
 import { OptionLike } from "./interfaces"
-import { Button } from "../button/button"
+import { Button, PressedEvent } from "../button/button"
 import { Option } from "./option"
 
 @Component({
@@ -42,8 +42,9 @@ export class OptionComponent<T> implements OptionLike<T> {
     public hover: boolean
 
     @Output()
-    public readonly pressed: EventEmitter<MouseEvent>
+    public readonly pressed: EventEmitter<PressedEvent>
 
+    // tslint:disable-next-line:no-output-native
     @Output()
     public readonly select: EventEmitter<T>
 

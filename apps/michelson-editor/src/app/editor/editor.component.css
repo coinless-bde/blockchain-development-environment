@@ -4,10 +4,11 @@
     height: 100%;
     grid-template-areas:
         "menubar menubar menubar menubar"
+        "toolbar sidebar tabs preview"
         "toolbar sidebar content preview"
         "toolbar sidebar content terminal";
     grid-template-columns: 48px 0.333fr 1fr 0.667fr;
-    grid-template-rows: 40px 2fr 1fr;
+    grid-template-rows: 40px 40px 2fr 1fr;
 }
 
 bde-editor-menubar {
@@ -24,6 +25,10 @@ bde-editor-sidebar {
     grid-area: sidebar;
     min-width: 240px;
     background-color: #252526;
+}
+
+bde-editor-tabs {
+    grid-area: tabs;
 }
 
 bde-editor-content {

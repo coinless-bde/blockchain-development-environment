@@ -1,7 +1,6 @@
 import { Subject } from "rxjs"
 import { QueryList, TemplateRef } from "@angular/core"
 import { ButtonLike } from "../button/button"
-import { OverlayRef } from "@angular/cdk/overlay"
 
 export interface SelectLike<T = any> extends ButtonLike {
     expanded: boolean

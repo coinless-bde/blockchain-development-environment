@@ -2,14 +2,24 @@
     --text-color: var(--color-base-01);
 
     position: relative;
-    display: flex;
+    display: inline-flex;
+    align-items: center;
     flex-direction: row;
-    padding: 6px 11px;
+    height: 28px;
     opacity: 0.8;
     color: var(--text-color);
     background-color: var(--fill-color);
     transition: opacity 0.3s, color 0.3s;
     outline: none;
+    cursor: pointer;
+}
+
+:host[bde-button] {
+    padding: 0 11px;
+}
+
+:host[bde-button-icon] {
+    padding: 0;
 }
 
 :host[color="primary"] {
@@ -35,13 +45,18 @@
     bottom: -2px;
     border: 1px solid var(--highlight-color);
     opacity: 0;
-    transition: opacity 0.3s;
+    transition: opacity 0.1s;
 }
 
 :host.is-focus:before {
     opacity: 1;
 }
 
+:host.is-active:before {
+    opacity: 0;
+}
+
 :host.is-disabled {
     opacity: 0.64;
+    cursor: not-allowed;
 }

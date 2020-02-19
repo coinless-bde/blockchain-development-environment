@@ -3,9 +3,7 @@ import { Component, OnInit } from "@angular/core"
 @Component({
     selector: "bde-editor-preview",
     template: `
-        <p>
-            editor-preview works!
-        </p>
+<!--        <img src="preview/logo.png" alt="" />-->
     `,
     styleUrls: ["./editor-preview.component.css"],
 })

@@ -1,9 +1,9 @@
 import { NgModule } from "@angular/core"
-import { CodiconDirective } from "./codicon.directive"
+import { CodiconComponent } from "./codicon.component"
 
 @NgModule({
-    declarations: [CodiconDirective],
-    exports: [CodiconDirective],
+    declarations: [CodiconComponent],
+    exports: [CodiconComponent],
     imports: [],
 })
 export class CodiconModule {}
