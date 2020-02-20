@@ -70,7 +70,8 @@
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "options": {
-                        "browserTarget": "michelson-editor:build"
+                        "browserTarget": "michelson-editor:build",
+                        "proxyConfig": "apps/michelson-editor/proxy.json"
                     },
                     "configurations": {
                         "production": {

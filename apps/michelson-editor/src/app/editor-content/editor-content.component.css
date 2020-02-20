@@ -1,6 +1,7 @@
 :host {
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 bde-editor-tabs {
@@ -9,4 +10,9 @@ bde-editor-tabs {
 
 bde-monaco-editor {
     flex: 1;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 40px;
+    bottom: 0;
 }

@@ -1,26 +1,32 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core"
+import { ChangeDetectionStrategy, Component } from "@angular/core"
+import { Connect, effects } from "ng-effects"
+import { EditorMenubar, EditorMenubarLike } from "./editor-menubar"
+import { Subject } from "rxjs"
+import { ActivatedRoute } from "@angular/router"
 
 @Component({
     selector: "bde-editor-menubar",
     template: `
         <div class="document">
-            <div class="documentAuthor">@stupidawesome</div>
+            <div class="documentAuthor">{{ username }}</div>
             <div class="documentSeparator">/</div>
-            <span class="documentTitle is-hidden" #output>{{ title || "untitled" }}</span>
+            <span class="documentTitle is-hidden" #output>{{ projectName || "untitled" }}</span>
             <input
                 class="documentTitle"
                 spellcheck="false"
                 autocomplete="false"
                 maxlength="80"
                 placeholder="untitled"
-                [value]="title"
+                [value]="projectName"
                 [style.width.px]="output.clientWidth"
-                (input)="title = $any($event).target.value.trim()"
+                (input)="projectName = $any($event).target.value.trim()"
                 #input
             />
 
             <div class="documentDeploy">
-                <button bde-button color="primary" class="deployButton">Deploy</button>
+                <button bde-button color="primary" class="deployButton" (pressed)="deploy.next()">
+                    Deploy
+                </button>
             </div>
         </div>
 
@@ -31,9 +37,12 @@ import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core"
                 [(selected)]="selectedNetwork"
             >
                 <bde-select-label>{{ selectedNetwork }}</bde-select-label>
-                <bde-option *ngFor="let option of networkOptions" [value]="option">{{
-                    option
-                }}</bde-option>
+                <bde-option
+                    *ngFor="let option of networkOptions"
+                    [value]="option"
+                    [disabled]="option.disabled"
+                    >{{ option.label }}</bde-option
+                >
             </bde-select>
 
             <div class="networkAddress">
@@ -46,26 +55,59 @@ import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core"
 
         <div class="settings">
             <button bde-button class="settingsProfile">
-                <img src="/assets/avatar/1.png" alt="" />
-                <span>stupidawesome</span>
+                <img src="https://api.adorable.io/avatars/48/{{ username }}.png" alt="" />
+                <span>{{ username }}</span>
             </button>
-            <button bde-button color="secondary" class="settingsPreviewToggle">
+            <button
+                bde-button
+                color="secondary"
+                class="settingsPreviewToggle"
+                (pressed)="splitPane = !splitPane"
+            >
                 <bde-codicon icon="symbol-boolean"></bde-codicon>
-                <span>Close</span>
+                <span>{{ splitPane ? "Close" : "Open" }}</span>
             </button>
         </div>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrls: ["./editor-menubar.component.css"],
+    providers: [effects(EditorMenubar)],
 })
-export class EditorMenubarComponent implements OnInit {
-    title = ""
+export class EditorMenubarComponent implements EditorMenubarLike {
+    public splitPane: boolean
+    public projectName: string
+    public networkOptions = [
+        {
+            label: "1: Mainnet (Coming soon)",
+            disabled: true,
+        },
+        {
+            label: "2: Babylon",
+            disabled: false,
+        },
+        {
+            label: "3: Carthage (Coming soon)",
+            disabled: true,
+        },
+        {
+            label: "4: Zeronet (Coming soon)",
+            disabled: true,
+        },
+        {
+            label: "5: Sandbox (Coming soon)",
+            disabled: true,
+        },
+    ]
+    public selectedNetwork = this.networkOptions[1]
+    public username: string
+    public deploy: Subject<void>
 
-    networkOptions = ["1: Mainnet", "2: Babylon", "3: Carthage", "4: Zeronet", "5: Sandbox"]
-
-    selectedNetwork = this.networkOptions[4]
-
-    constructor() {}
-
-    ngOnInit(): void {}
+    constructor(connect: Connect, route: ActivatedRoute) {
+        const { project, user } = route.snapshot.params
+        this.username = user || "anonymous"
+        this.projectName = project || ""
+        this.splitPane = true
+        this.deploy = new Subject()
+        connect(this)
+    }
 }

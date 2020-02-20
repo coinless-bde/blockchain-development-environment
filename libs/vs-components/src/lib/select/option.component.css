@@ -12,6 +12,8 @@
     background-color: var(--fill-color);
     transition: opacity 0.3s, color 0.3s;
     outline: none;
+    font: var(--font-label-3);
+    cursor: pointer;
 }
 
 :host.is-hover {
@@ -40,4 +42,5 @@
 
 :host.is-disabled {
     opacity: 0.64;
+    cursor: not-allowed;
 }

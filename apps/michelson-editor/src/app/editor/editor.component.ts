@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core"
+import { ChangeDetectionStrategy, Component, HostBinding } from "@angular/core"
+import { Editor, EditorLike } from "./editor"
+import { Connect, effects } from "ng-effects"
 
 @Component({
     selector: "bde-editor",
@@ -12,7 +14,13 @@ import { ChangeDetectionStrategy, Component } from "@angular/core"
     `,
     styleUrls: ["./editor.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [effects(Editor, { markDirty: true })],
 })
-export class EditorComponent {
-    constructor() {}
+export class EditorComponent implements EditorLike {
+    @HostBinding("class.is-splitPane")
+    public splitPane = true
+
+    constructor(connect: Connect) {
+        connect(this)
+    }
 }

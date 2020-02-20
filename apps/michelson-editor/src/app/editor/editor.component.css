@@ -6,8 +6,12 @@
         "menubar menubar menubar menubar"
         "toolbar sidebar content preview"
         "toolbar sidebar content terminal";
-    grid-template-columns: 48px 0.333fr 1fr 0.667fr;
+    grid-template-columns: 48px 1fr 3fr 2fr;
     grid-template-rows: 40px 2fr 1fr;
+}
+
+:host:not(.is-splitPane) {
+    grid-template-columns: 48px 1fr 4fr 0;
 }
 
 bde-editor-menubar {

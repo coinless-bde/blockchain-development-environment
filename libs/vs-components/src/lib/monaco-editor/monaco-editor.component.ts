@@ -1,9 +1,18 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input } from "@angular/core"
+import {
+    ChangeDetectionStrategy,
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    Output,
+} from "@angular/core"
 import { Connect, Effect, HOST_EFFECTS, State } from "ng-effects"
 import * as Monaco from "monaco-editor"
 import { editor } from "monaco-editor"
-import { combineLatest, Observable } from "rxjs"
+import { combineLatest, fromEventPattern, Observable } from "rxjs"
 import { MICHELSON_TOKENS_PROVIDER } from "./michelson-language-definition"
+import { isDefined } from "../utils"
+import { filter, map, switchMap } from "rxjs/operators"
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor
 
 interface Window {
@@ -21,10 +30,13 @@ declare var window: Window
 })
 export class MonacoEditorComponent {
     @Input()
-    public document = ""
+    public document: string
 
     @Input()
-    public language = "plaintext"
+    public language: string
+
+    @Output()
+    public valueChanges: EventEmitter<string>
 
     public instance?: IStandaloneCodeEditor
 
@@ -34,25 +46,42 @@ export class MonacoEditorComponent {
 
     constructor(elementRef: ElementRef, connect: Connect) {
         this.nativeElement = elementRef.nativeElement
+        this.valueChanges = new EventEmitter()
+        this.document = ""
+        this.language = "plaintext"
         this.instance = undefined
         this.monaco = undefined
         connect(this)
     }
 
     @Effect()
-    loadDocument(state: State<MonacoEditorComponent>) {
+    public didChangeModelContent(state: State<MonacoEditorComponent>) {
+        return state.instance
+            .pipe(
+                filter(isDefined),
+                switchMap(instance => {
+                    function listen(handler: (event: any) => void) {
+                        instance.onDidChangeModelContent(handler)
+                    }
+                    return fromEventPattern(listen).pipe(map(() => instance.getValue()))
+                }),
+            )
+            .subscribe(this.valueChanges)
+    }
+
+    @Effect()
+    public loadDocument(state: State<MonacoEditorComponent>) {
         return combineLatest(state.document, state.instance).subscribe(([document, instance]) => {
-            if (instance) {
+            if (instance && document) {
                 instance.setValue(document)
             }
         })
     }
 
     @Effect()
-    setLanguage(state: State<MonacoEditorComponent>) {
+    public setLanguage(state: State<MonacoEditorComponent>) {
         return combineLatest(state.language, state.instance, state.monaco).subscribe(
             ([language, instance, monaco]) => {
-                console.log("set!", language, instance, monaco)
                 if (instance && monaco) {
                     const model = instance.getModel()
                     if (model) {
@@ -64,13 +93,21 @@ export class MonacoEditorComponent {
     }
 
     @Effect({ assign: true, whenRendered: true })
-    mountEditor({  }: State<MonacoEditorComponent>) {
+    public mountEditor({  }: State<MonacoEditorComponent>) {
         return new Observable<Partial<MonacoEditorComponent>>(subscriber => {
             const onGotAmdLoader = () => {
                 // Load monaco
                 window.require(["vs/editor/editor.main"], (monaco: any) => {
+                    const instance = this.createEditor(monaco)
+
+                    instance.onKeyUp(e => {
+                        if (e.ctrlKey && e.keyCode === monaco.KeyCode.KEY_S) {
+                            e.preventDefault()
+                        }
+                    })
+
                     subscriber.next({
-                        instance: this.createEditor(monaco),
+                        instance,
                         monaco,
                     })
                 })
@@ -93,7 +130,7 @@ export class MonacoEditorComponent {
         })
     }
 
-    createEditor(monaco: any): IStandaloneCodeEditor {
+    private createEditor(monaco: any): IStandaloneCodeEditor {
         const langId = "michelson"
 
         // noinspection TypeScriptValidateJSTypes

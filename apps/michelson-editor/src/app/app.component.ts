@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component } from "@angular/core"
 @Component({
     selector: "bde-root",
     template: `
-        <bde-editor></bde-editor>
+        <router-outlet></router-outlet>
     `,
     styleUrls: ["./app.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,

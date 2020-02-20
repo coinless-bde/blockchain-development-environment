@@ -40,6 +40,7 @@ export class OptionComponent<T> implements OptionLike<T> {
     @HostBinding("class.is-active")
     public active: boolean
 
+    @Input()
     @HostBinding("class.is-disabled")
     public disabled: boolean
 

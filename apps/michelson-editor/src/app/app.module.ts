@@ -10,10 +10,17 @@ import { EditorToolbarComponent } from "./editor-toolbar/editor-toolbar.componen
 import { EditorMenubarComponent } from "./editor-menubar/editor-menubar.component"
 import { EditorPreviewComponent } from "./editor-preview/editor-preview.component"
 import { EditorTerminalComponent } from "./editor-terminal/editor-terminal.component"
-import { ButtonModule, CodiconModule, SelectModule } from "@coinless/vs-components"
+import {
+    ButtonModule,
+    CodiconModule,
+    MonacoEditorModule,
+    SelectModule,
+} from "@coinless/vs-components"
 import { EditorTabsComponent } from "./editor-tabs/editor-tabs.component"
 import { EditorTabComponent } from "./editor-tabs/editor-tab/editor-tab.component"
-import { MonacoEditorModule } from "../../../../libs/vs-components/src/lib/monaco-editor/monaco-editor.module"
+import { withInitialState } from "../store/store"
+import { AppState, initialState } from "./state"
+import { HttpClientModule } from "@angular/common/http"
 
 @NgModule({
     declarations: [
@@ -30,13 +37,34 @@ import { MonacoEditorModule } from "../../../../libs/vs-components/src/lib/monac
     ],
     imports: [
         BrowserModule,
-        RouterModule.forRoot([], { initialNavigation: "enabled" }),
+        RouterModule.forRoot(
+            [
+                {
+                    path: "",
+                    component: EditorComponent,
+                },
+                {
+                    path: ":user",
+                    component: EditorComponent,
+                },
+                {
+                    path: ":user/:project",
+                    component: EditorComponent,
+                },
+                {
+                    path: ":user/:project/:file",
+                    component: EditorComponent,
+                },
+            ],
+            { initialNavigation: "enabled" },
+        ),
         ButtonModule,
         SelectModule,
         CodiconModule,
         MonacoEditorModule,
+        HttpClientModule,
     ],
-    providers: [],
+    providers: [withInitialState<AppState>(initialState)],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
