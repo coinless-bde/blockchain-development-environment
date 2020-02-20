@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, Output } from "@angular/core"
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    HostBinding,
+    Input,
+    Output,
+} from "@angular/core"
 import { Connect, effects } from "ng-effects"
 import { OptionLike } from "./interfaces"
 import { Button, PressedEvent } from "../button/button"

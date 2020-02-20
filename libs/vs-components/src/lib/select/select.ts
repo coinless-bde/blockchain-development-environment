@@ -3,7 +3,8 @@ import { changes, Context, Effect, State } from "ng-effects"
 import { map, mapTo, mergeAll, switchMap } from "rxjs/operators"
 import { queryList } from "../utils"
 import { OptionLike, SelectLike } from "./interfaces"
-import { merge, Observable } from "rxjs"
+import { Observable } from "rxjs"
+import { ButtonLike } from "../.."
 
 export function optionSelected<T>(
     source: Observable<QueryList<OptionLike<T>> | undefined>,
@@ -29,10 +30,15 @@ export class Select {
     }
 
     @Effect("expanded")
-    public toggleExpanded(state: State<SelectLike>, context: Context<SelectLike>) {
-        const selected = optionSelected(state.options).pipe(mapTo(false))
-        const toggle = context.pressed.pipe(map(() => !context.expanded))
+    public toggleExpanded(state: State<SelectLike>) {
+        return optionSelected(state.options).pipe(mapTo(false))
+    }
 
-        return merge(selected, toggle)
+    @Effect("expanded")
+    public buttonToggle(
+        state: State<ButtonLike & SelectLike>,
+        context: Context<ButtonLike & SelectLike>,
+    ) {
+        return context.pressed.pipe(map(() => !context.expanded))
     }
 }

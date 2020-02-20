@@ -17,7 +17,7 @@
         "baseUrl": ".",
         "strict": true,
         "paths": {
-            "@michelson-editor/vs-components": ["libs/vs-components/src/index.ts"]
+            "@coinless/vs-components": ["libs/vs-components/src/index.ts"]
         }
     },
     "exclude": ["node_modules", "tmp"]

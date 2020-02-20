@@ -10,8 +10,10 @@ import { EditorToolbarComponent } from "./editor-toolbar/editor-toolbar.componen
 import { EditorMenubarComponent } from "./editor-menubar/editor-menubar.component"
 import { EditorPreviewComponent } from "./editor-preview/editor-preview.component"
 import { EditorTerminalComponent } from "./editor-terminal/editor-terminal.component"
-import { ButtonModule, CodiconModule, SelectModule } from "@michelson-editor/vs-components"
+import { ButtonModule, CodiconModule, SelectModule } from "@coinless/vs-components"
 import { EditorTabsComponent } from "./editor-tabs/editor-tabs.component"
+import { EditorTabComponent } from "./editor-tabs/editor-tab/editor-tab.component"
+import { MonacoEditorModule } from "../../../../libs/vs-components/src/lib/monaco-editor/monaco-editor.module"
 
 @NgModule({
     declarations: [
@@ -24,6 +26,7 @@ import { EditorTabsComponent } from "./editor-tabs/editor-tabs.component"
         EditorPreviewComponent,
         EditorTerminalComponent,
         EditorTabsComponent,
+        EditorTabComponent,
     ],
     imports: [
         BrowserModule,
@@ -31,6 +34,7 @@ import { EditorTabsComponent } from "./editor-tabs/editor-tabs.component"
         ButtonModule,
         SelectModule,
         CodiconModule,
+        MonacoEditorModule,
     ],
     providers: [],
     bootstrap: [AppComponent],

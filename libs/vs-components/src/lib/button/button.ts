@@ -22,7 +22,7 @@ export interface ButtonLike {
     focus: boolean
     active: boolean
     disabled: boolean
-    pressed: Subject<MouseEvent | KeyboardEvent>
+    pressed: Subject<PressedEvent>
 }
 
 export type PressedEvent = MouseEvent | KeyboardEvent

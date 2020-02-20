@@ -124,17 +124,6 @@ h6 {
     font: var(--font-heading-6);
 }
 
-p,
-ul,
-ol,
-div,
-input,
-textarea,
-select,
-label {
-    font: var(--font-body-1);
-}
-
 code,
 pre {
     font: var(--font-code-1);
