@@ -1,5 +1,4 @@
-export const EXAMPLE = `
-NIL @operations operation; SWAP;
+export const EXAMPLE = `NIL @operations operation; SWAP;
 UNPAPAIR @% @% @%; DIP {DUP};
 IF_LEFT
   {
@@ -85,5 +84,4 @@ IF_LEFT
     NONE @none (pair (pair address address) (pair (pair mutez timestamp) mutez));
     SWAP; UPDATE @cleared_map; SWAP; DIP { SWAP; DIP {PAIR} };
     CONS; PAIR;
-  }
-`
+  }`

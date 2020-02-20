@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { HOST_EFFECTS } from "ng-effects"
 import { README } from "./default-documents/readme"
 import { EXAMPLE } from "./default-documents/example"
+import { HELLO } from "./default-documents/helloTezos"
 
 @Component({
     selector: "bde-editor-content",
@@ -32,6 +33,11 @@ export class EditorContentComponent {
         {
             title: "example.tz",
             document: EXAMPLE,
+            language: "michelson",
+        },
+        {
+            title: "helloTezos.tz",
+            document: HELLO,
             language: "michelson",
         },
     ]
