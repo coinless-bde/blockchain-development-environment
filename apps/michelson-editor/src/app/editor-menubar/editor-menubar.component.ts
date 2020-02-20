@@ -63,7 +63,7 @@ export class EditorMenubarComponent implements OnInit {
 
     networkOptions = ["1: Mainnet", "2: Babylon", "3: Carthage", "4: Zeronet", "5: Sandbox"]
 
-    selectedNetwork = this.networkOptions[4]
+    selectedNetwork = this.networkOptions[1]
 
     constructor() {}
 
