@@ -14,6 +14,14 @@ on the example.tz file and click the "typecheck" button.
 
 Michelson is a stack based language running on the Tezos blockchain, its
 inspired by Forth and Lisp. We support basic editor functionality for Michelson.
+We believe that building smart contracts directly in Michelson rather than a
+compile to language is the way to go for secure and understandable smart
+contracts
+
+## Networks
+
+Currently we only support deploying Babylonnet, we are working on supporting
+every network as you are reading this
 
 ### Examples
 
@@ -23,8 +31,8 @@ PUSH string "Hello Tezos!";
 NIL operation; PAIR;
 \`\`\`
 
-from camlcase-dev their extremely awesome series on Michelson, check it out,
-its really good [link]\
+from camlcase-dev their extremely awesome series on Michelson, check it out, its
+really good [link]\
 (https://gitlab.com/camlcase-dev/michelson-tutorial/tree/master/01)
 
 the other example 'example.tz' from baking-bad [link]\
