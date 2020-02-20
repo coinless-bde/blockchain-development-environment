@@ -35,8 +35,8 @@ from camlcase-dev their extremely awesome series on Michelson, check it out, its
 really good [link]\
 (https://gitlab.com/camlcase-dev/michelson-tutorial/tree/master/01)
 
-the other example 'example.tz' from baking-bad [link]\
-(https://github.com/baking-bad/vscode-michelson-syntax/blob/master/examples/example1.tz)
+the other example 'example.tz' from baking-bad
+[link](https://github.com/baking-bad/vscode-michelson-syntax/blob/master/examples/example1.tz)
 
 ### Editor
 
