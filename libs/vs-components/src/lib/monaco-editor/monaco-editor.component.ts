@@ -136,9 +136,7 @@ export class MonacoEditorComponent {
         // noinspection TypeScriptValidateJSTypes
         monaco.languages.register({
             id: langId,
-            filenamePatterns: ["*.tz"],
-            filenames: ["*.tz"],
-            extension: [".tz"],
+            aliases: ["tz"],
         })
 
         monaco.languages.setMonarchTokensProvider(langId, MICHELSON_TOKENS_PROVIDER)
