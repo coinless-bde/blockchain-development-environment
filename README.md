@@ -1,5 +1,5 @@
-#BDE
->Blockchain Development Environment
+# BDE
+> Blockchain Development Environment
 
 Hi and welcome, in this editor you will find everything you need to write smart
 contracts for the Tezos blockchain in Michelson. Michelson is the Tezos smart
