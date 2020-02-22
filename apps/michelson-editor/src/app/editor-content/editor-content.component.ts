@@ -5,7 +5,7 @@ import { EXAMPLE } from "./default-documents/example"
 import { MonacoEditorComponent } from "@coinless/vs-components"
 import { AppState, appStore } from "../state"
 import { Store } from "../../store/store"
-import { filter, map, retry, switchMap, tap, withLatestFrom } from "rxjs/operators"
+import { filter, ignoreElements, map, retry, switchMap, tap, withLatestFrom } from "rxjs/operators"
 import { EditorService } from "../editor/editor.service"
 import { fromEventPattern, Subject } from "rxjs"
 import { JsonObject } from "../../store/interfaces"
@@ -100,7 +100,7 @@ export class EditorContentComponent {
     //     )
     // }
 
-    @Effect<any>(Store)
+    @Effect(Store)
     public storeEditorState(state: State<EditorContentComponent>) {
         return changes(state.editorState).pipe(
             appStore((store, value) => {
@@ -109,7 +109,7 @@ export class EditorContentComponent {
         )
     }
 
-    @Effect<any>({ markDirty: true })
+    @Effect({ markDirty: true })
     public loadFile(
         state: State<EditorContentComponent>,
         context: Context<EditorContentComponent>,
@@ -120,6 +120,7 @@ export class EditorContentComponent {
                 tap(res => {
                     context.tabs[1].code = res.code
                 }),
+                ignoreElements(),
             )
         }
     }
@@ -139,7 +140,7 @@ export class EditorContentComponent {
             )
     }
 
-    @Effect<any>(Store)
+    @Effect(Store)
     public save(state: State<EditorContentComponent>) {
         const renderer = this.renderer
         const save = fromEventPattern<KeyboardEvent>(listener)
@@ -157,7 +158,7 @@ export class EditorContentComponent {
             }),
             map(res => res.id),
             tap(id => {
-                const { project, user } = this.route.snapshot.params
+                const { project, user, file } = this.route.snapshot.params
                 const url = this.router.createUrlTree([user, project || "untitled", id])
                 this.router.navigateByUrl(url)
             }),

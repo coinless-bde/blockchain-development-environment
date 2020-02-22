@@ -24,7 +24,7 @@ export class EditorMenubar {
         private activatedRoute: ActivatedRoute,
     ) {}
 
-    @Effect<any>(Store, { whenRendered: true })
+    @Effect(Store, { whenRendered: true })
     public togglePreview(state: State<EditorMenubarLike>) {
         return changes(state.splitPane).pipe(
             appStore((store, value) => {

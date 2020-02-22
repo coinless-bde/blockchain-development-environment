@@ -1,4 +1,4 @@
-import { Subject } from "rxjs"
+import { merge, Subject } from "rxjs"
 import { QueryList, TemplateRef } from "@angular/core"
 import { ButtonLike } from "../button/button"
 

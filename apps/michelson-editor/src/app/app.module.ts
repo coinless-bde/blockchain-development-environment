@@ -41,11 +41,13 @@ import { HttpClientModule } from "@angular/common/http"
             [
                 {
                     path: "",
-                    component: EditorComponent,
+                    redirectTo: "/anonymous/",
+                    pathMatch: "full",
                 },
                 {
                     path: ":user",
-                    component: EditorComponent,
+                    redirectTo: "/anonymous/",
+                    pathMatch: "full",
                 },
                 {
                     path: ":user/:project",

@@ -72,7 +72,7 @@ export class MonacoEditorComponent {
     @Effect()
     public loadDocument(state: State<MonacoEditorComponent>) {
         return combineLatest(state.document, state.instance).subscribe(([document, instance]) => {
-            if (instance && document) {
+            if (instance && document && document !== instance.getValue()) {
                 instance.setValue(document)
             }
         })
@@ -85,7 +85,11 @@ export class MonacoEditorComponent {
                 if (instance && monaco) {
                     const model = instance.getModel()
                     if (model) {
-                        monaco.editor.setModelLanguage(model, language)
+                        const currentLanguage = model.getModeId()
+                        if (language !== currentLanguage) {
+                            console.log("set lang!")
+                            monaco.editor.setModelLanguage(model, language)
+                        }
                     }
                 }
             },
@@ -99,12 +103,6 @@ export class MonacoEditorComponent {
                 // Load monaco
                 window.require(["vs/editor/editor.main"], (monaco: any) => {
                     const instance = this.createEditor(monaco)
-
-                    instance.onKeyUp(e => {
-                        if (e.ctrlKey && e.keyCode === monaco.KeyCode.KEY_S) {
-                            e.preventDefault()
-                        }
-                    })
 
                     subscriber.next({
                         instance,
