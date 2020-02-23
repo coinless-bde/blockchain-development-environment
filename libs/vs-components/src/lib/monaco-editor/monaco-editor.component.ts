@@ -63,6 +63,7 @@ export class MonacoEditorComponent {
                     function listen(handler: (event: any) => void) {
                         instance.onDidChangeModelContent(handler)
                     }
+
                     return fromEventPattern(listen).pipe(map(() => instance.getValue()))
                 }),
             )
