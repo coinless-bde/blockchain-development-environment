@@ -71,7 +71,7 @@ import { ActivatedRoute } from "@angular/router"
     `,
     changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrls: ["./editor-menubar.component.css"],
-    providers: [effects(EditorMenubar)],
+    providers: [effects(EditorMenubar, { markDirty: true })],
 })
 export class EditorMenubarComponent implements EditorMenubarLike {
     public splitPane: boolean

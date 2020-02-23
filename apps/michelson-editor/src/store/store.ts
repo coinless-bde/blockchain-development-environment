@@ -1,7 +1,7 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core"
 import { Observable, OperatorFunction, Subject, Subscriber } from "rxjs"
 import { map, scan, shareReplay, startWith } from "rxjs/operators"
-import { DefaultEffectOptions, EffectHandler } from "ng-effects"
+import { EffectAdapter } from "ng-effects"
 import { JsonObject } from "./interfaces"
 
 export const INITIAL_STATE = new InjectionToken("INITIAL_VALUE")
@@ -55,7 +55,7 @@ export class Dispatcher {
 }
 
 @Injectable({ providedIn: "root" })
-export class Dispatch implements EffectHandler<Action, DefaultEffectOptions> {
+export class Dispatch implements EffectAdapter<Action> {
     constructor(private dispatcher: Dispatcher) {}
 
     public next(action: Action) {
@@ -64,8 +64,7 @@ export class Dispatch implements EffectHandler<Action, DefaultEffectOptions> {
 }
 
 @Injectable({ providedIn: "root" })
-export class Store<T extends object> extends Observable<T>
-    implements EffectHandler<SetStateFn<T>, DefaultEffectOptions> {
+export class Store<T extends object> extends Observable<T> implements EffectAdapter<SetStateFn<T>> {
     public subject: Subject<SetStateFn<T>>
 
     constructor(@Inject(INITIAL_STATE) initialState: T) {

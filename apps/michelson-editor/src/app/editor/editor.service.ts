@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core"
 import { HttpClient } from "@angular/common/http"
-import { EffectHandler, EffectMetadata } from "ng-effects"
 import { mapTo } from "rxjs/operators"
 
 export interface DeployPayload {
@@ -38,7 +37,7 @@ export interface LoadResponse {
 @Injectable({
     providedIn: "root",
 })
-export class EditorService implements EffectHandler<string, { save: boolean }> {
+export class EditorService {
     constructor(private http: HttpClient) {}
 
     public load(id: number) {
@@ -65,6 +64,4 @@ export class EditorService implements EffectHandler<string, { save: boolean }> {
     public deploy(payload: DeployPayload) {
         return this.http.post("/api/publish", payload)
     }
-
-    public next(value: any, options: any, metadata: EffectMetadata<any>): void {}
 }

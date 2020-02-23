@@ -87,7 +87,6 @@ export class MonacoEditorComponent {
                     if (model) {
                         const currentLanguage = model.getModeId()
                         if (language !== currentLanguage) {
-                            console.log("set lang!")
                             monaco.editor.setModelLanguage(model, language)
                         }
                     }

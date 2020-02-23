@@ -5,7 +5,7 @@ import { EXAMPLE } from "./default-documents/example"
 import { MonacoEditorComponent } from "@coinless/vs-components"
 import { AppState, appStore } from "../state"
 import { Store } from "../../store/store"
-import { filter, ignoreElements, map, retry, switchMap, tap, withLatestFrom } from "rxjs/operators"
+import { filter, ignoreElements, map, mapTo, retry, switchMap, tap, withLatestFrom } from "rxjs/operators"
 import { EditorService } from "../editor/editor.service"
 import { fromEventPattern, Subject } from "rxjs"
 import { JsonObject } from "../../store/interfaces"
@@ -120,7 +120,6 @@ export class EditorContentComponent {
                 tap(res => {
                     context.tabs[1].code = res.code
                 }),
-                ignoreElements(),
             )
         }
     }
