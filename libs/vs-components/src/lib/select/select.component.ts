@@ -11,7 +11,7 @@ import {
     TemplateRef,
     ViewChild,
 } from "@angular/core"
-import { Connect, effects } from "ng-effects"
+import { Connect, Effects, effects } from "ng-effects"
 import { Select } from "./select"
 import { DropdownLike, OptionLike, SelectLike } from "./interfaces"
 import { Button } from "../button/button"
@@ -48,7 +48,7 @@ import { Dropdown } from "./dropdown"
     styleUrls: ["./select.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
-        effects([Select, Button, Dropdown], { markDirty: true }),
+        Effects, Select, Button, Dropdown,
         {
             provide: SelectLike,
             useExisting: SelectComponent,

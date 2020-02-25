@@ -6,7 +6,7 @@ import {
     Input,
     Output,
 } from "@angular/core"
-import { Connect, effects } from "ng-effects"
+import { Connect, Effects, effects } from "ng-effects"
 import { Button, ButtonLike, PressedEvent } from "./button"
 
 @Component({
@@ -16,7 +16,7 @@ import { Button, ButtonLike, PressedEvent } from "./button"
     `,
     styleUrls: ["./button.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [effects(Button, { markDirty: true })],
+    providers: [Effects, Button],
 })
 export class ButtonComponent implements ButtonLike {
     @Input()

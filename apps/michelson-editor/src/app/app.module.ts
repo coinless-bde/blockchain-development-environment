@@ -21,6 +21,7 @@ import { EditorTabComponent } from "./editor-tabs/editor-tab/editor-tab.componen
 import { withInitialState } from "../store/store"
 import { AppState, initialState } from "./state"
 import { HttpClientModule } from "@angular/common/http"
+import { effects } from "ng-effects"
 
 @NgModule({
     declarations: [
@@ -66,7 +67,7 @@ import { HttpClientModule } from "@angular/common/http"
         MonacoEditorModule,
         HttpClientModule,
     ],
-    providers: [withInitialState<AppState>(initialState)],
+    providers: [withInitialState<AppState>(initialState),],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -7,7 +7,7 @@ import {
     Output,
 } from "@angular/core"
 import { OptionLike, PressedEvent, Select, SelectLike } from "@coinless/vs-components"
-import { Connect, effects } from "ng-effects"
+import { Connect, Effects, effects } from "ng-effects"
 
 @Component({
     selector: "bde-editor-tabs",
@@ -20,7 +20,7 @@ import { Connect, effects } from "ng-effects"
     styleUrls: ["./editor-tabs.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
-        effects(Select, { markDirty: true }),
+        Effects, Select,
         {
             provide: SelectLike,
             useExisting: EditorTabsComponent,

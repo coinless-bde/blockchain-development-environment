@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, Renderer2, ViewChild } from "@angular/core"
-import { changes, Connect, Context, Effect, HOST_EFFECTS, State } from "ng-effects"
+import { changes, Connect, Context, Effect, Effects, State } from "ng-effects"
 import { README } from "./default-documents/readme"
 import { EXAMPLE } from "./default-documents/example"
 import { MonacoEditorComponent } from "@coinless/vs-components"
 import { AppState, appStore } from "../state"
 import { Store } from "../../store/store"
-import { filter, ignoreElements, map, mapTo, retry, switchMap, tap, withLatestFrom } from "rxjs/operators"
+import { filter, map, retry, switchMap, tap, withLatestFrom } from "rxjs/operators"
 import { EditorService } from "../editor/editor.service"
 import { fromEventPattern, Subject } from "rxjs"
 import { JsonObject } from "../../store/interfaces"
@@ -42,7 +42,7 @@ export function coerceJson(value: any): value is JsonObject {
     `,
     styleUrls: ["./editor-content.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [HOST_EFFECTS],
+    providers: [Effects],
 })
 export class EditorContentComponent {
     public tabs: EditorContentState[] = [
@@ -157,7 +157,7 @@ export class EditorContentComponent {
             }),
             map(res => res.id),
             tap(id => {
-                const { project, user, file } = this.route.snapshot.params
+                const { project, user } = this.route.snapshot.params
                 const url = this.router.createUrlTree([user, project || "untitled", id])
                 this.router.navigateByUrl(url)
             }),

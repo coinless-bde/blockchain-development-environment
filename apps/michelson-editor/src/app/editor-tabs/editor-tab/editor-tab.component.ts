@@ -6,7 +6,7 @@ import {
     Input,
     Output,
 } from "@angular/core"
-import { Connect, effects } from "ng-effects"
+import { Connect, Effects, effects } from "ng-effects"
 import { Button, Option, OptionLike, PressedEvent } from "@coinless/vs-components"
 
 @Component({
@@ -17,7 +17,7 @@ import { Button, Option, OptionLike, PressedEvent } from "@coinless/vs-component
     styleUrls: ["./editor-tab.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
-        effects([Option, Button], { markDirty: true }),
+        Effects, Option, Button,
         {
             provide: OptionLike,
             useExisting: EditorTabComponent,

@@ -6,7 +6,7 @@ import {
     Input,
     Output,
 } from "@angular/core"
-import { Connect, Effect, HOST_EFFECTS, State } from "ng-effects"
+import { Connect, Effect, Effects, State } from "ng-effects"
 import * as Monaco from "monaco-editor"
 import { editor } from "monaco-editor"
 import { combineLatest, fromEventPattern, Observable } from "rxjs"
@@ -26,7 +26,7 @@ declare var window: Window
     template: ``,
     styleUrls: ["./monaco-editor.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [HOST_EFFECTS],
+    providers: [Effects],
 })
 export class MonacoEditorComponent {
     @Input()

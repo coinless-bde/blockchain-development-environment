@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
-import { Connect, effects } from "ng-effects"
+import { Connect, Effects, effects } from "ng-effects"
 import { EditorMenubar, EditorMenubarLike } from "./editor-menubar"
 import { Subject } from "rxjs"
 import { ActivatedRoute } from "@angular/router"
@@ -71,7 +71,7 @@ import { ActivatedRoute } from "@angular/router"
     `,
     changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrls: ["./editor-menubar.component.css"],
-    providers: [effects(EditorMenubar, { markDirty: true })],
+    providers: [Effects, EditorMenubar],
 })
 export class EditorMenubarComponent implements EditorMenubarLike {
     public splitPane: boolean

@@ -6,7 +6,7 @@ import {
     Input,
     Output,
 } from "@angular/core"
-import { Connect, effects } from "ng-effects"
+import { Connect, Effects, effects } from "ng-effects"
 import { OptionLike } from "./interfaces"
 import { Button, PressedEvent } from "../button/button"
 import { Option } from "./option"
@@ -19,7 +19,7 @@ import { Option } from "./option"
     styleUrls: ["./option.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
-        effects([Option, Button], { markDirty: true }),
+        Effects, Option, Button,
         {
             provide: OptionLike,
             useExisting: OptionComponent,
