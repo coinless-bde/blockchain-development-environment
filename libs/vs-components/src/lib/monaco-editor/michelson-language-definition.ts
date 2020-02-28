@@ -79,6 +79,7 @@ export const MICHELSON_TOKENS_PROVIDER = {
         "CHECK_SIGNATURE",
         "BLAKE",
         "SHA",
+        "SHA256",
         "HASH_KEY",
         "STEPS_TO_QUOTA",
         "SOURCE",
@@ -208,7 +209,7 @@ export const MICHELSON_TOKENS_PROVIDER = {
 
             // instructions, macros
             [
-                /[A-Z_]+/,
+                /[A-Z_]+[0-9]*/,
                 {
                     cases: {
                         "@keywords": "keyword",
