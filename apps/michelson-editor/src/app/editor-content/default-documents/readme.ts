@@ -26,9 +26,13 @@ every network as you are reading this
 ### Examples
 
 \`\`\`tz
-DROP;
-PUSH string "Hello Tezos!";
-NIL operation; PAIR;
+parameter Unit;
+storage string;
+code {
+    DROP;
+    PUSH string "Hello Tezos!";
+    NIL operation; PAIR;
+}
 \`\`\`
 
 from camlcase-dev their extremely awesome series on Michelson, check it out, its

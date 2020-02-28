@@ -1,3 +1,6 @@
-export const HELLO = `DROP;
+export const HELLO = `parameter string;
+storage string;
+code {
+DROP;
 PUSH string "Hello Tezos!";
-NIL operation; PAIR;`
+NIL operation; PAIR;}`

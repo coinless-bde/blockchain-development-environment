@@ -90,8 +90,7 @@ export class EditorContentComponent {
     //         console.log('autosave!')
     //     })
     //     return state.autoSave.pipe(
-    //         debounceTime(5000),
-    //         switchMap(() => {
+    //         debounceTime(5000), //         switchMap(() => {
     //             console.log('context', context.editorState)
     //             const id = context.editorState.id
     //             return id === null ? NEVER : this.editor.autosave({ ...context.editorState, id })

@@ -79,13 +79,18 @@ export const MICHELSON_TOKENS_PROVIDER = {
         "CHECK_SIGNATURE",
         "BLAKE",
         "SHA",
-        "SHA",
         "HASH_KEY",
         "STEPS_TO_QUOTA",
         "SOURCE",
         "SENDER",
         "ADDRESS",
         "CHAIN_ID",
+    ],
+
+    prime: [
+        "code",
+        "parameter",
+        "storage",
     ],
 
     typeKeywords: [
@@ -198,6 +203,9 @@ export const MICHELSON_TOKENS_PROVIDER = {
             // composite macros
             { include: "@compositeMacros" },
 
+            // data
+            [/[A-Z][0-9a-z]+/, { cases: { "@data": "type" } }],
+
             // instructions, macros
             [
                 /[A-Z_]+/,
@@ -212,10 +220,9 @@ export const MICHELSON_TOKENS_PROVIDER = {
 
             { include: "@whitespace" },
 
-            // data
-            [/[A-Z][0-9_a-z]*/, { cases: { "@data": "operators" } }],
             // types
-            [/[a-z][_a-z]+/, { cases: { "@typeKeywords": "type" } }],
+            [/[a-z][_a-z]+/, { cases: { "@typeKeywords": "type", "@prime": "operators" } }],
+
             // [/[@](|%|%%|[A-Za-z-_][A-Za-z-_0-9\.]*)/, 'type'],
             // [/[A-Z][0-9]*/, { cases: { '@typeKeywords': 'keyword',
             //                              '@keywords': 'keyword',
