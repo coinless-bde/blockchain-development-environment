@@ -72,7 +72,7 @@ export class Button {
     }
 
     @Effect()
-    public click({}, context: Context<ButtonLike>) {
+    public click(@Context() context: Context<ButtonLike>) {
         const events = this.events
         const pressed = merge(events.click, events["keydown.enter"], events["keydown.space"])
         return pressed.subscribe(event => {

@@ -9,7 +9,7 @@ export class Option {
     constructor(private select: SelectLike) {}
 
     @Effect("selected")
-    optionSelected({}, context: Context<OptionLike>) {
+    optionSelected(@Context() context: Context<OptionLike>) {
         return scheduled(
             this.select.selectedChange.pipe(
                 startWith(this.select.selected),
@@ -20,7 +20,7 @@ export class Option {
     }
 
     @Effect()
-    selectOption({}, context: Context<OptionLike>) {
+    selectOption(@Context() context: Context<OptionLike>) {
         return context.pressed.pipe(map(() => context.value)).subscribe(context.select)
     }
 }
