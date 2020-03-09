@@ -233,7 +233,7 @@ export const MICHELSON_TOKENS_PROVIDER = {
             [/[{}()\[\]]/, "@brackets"],
 
             // annotations
-            [/(@%|@%%|%@|[@:%][_a-zA-Z][_0-9a-zA-Z\.%@]*)/, "entity"],
+            [/(@%%|@%|%@|[@:%][_a-zA-Z][_0-9a-zA-Z\.%@]*)/, "entity"],
 
             // variables
             [/[@:%][a-z_A-Z]+/, "identifier"],
