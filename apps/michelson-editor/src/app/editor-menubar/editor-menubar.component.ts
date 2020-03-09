@@ -82,12 +82,12 @@ export class EditorMenubarComponent implements EditorMenubarLike {
             disabled: true,
         },
         {
-            label: "2: Babylon",
+            label: "2: Babylon (deprecated)",
             disabled: false,
         },
         {
-            label: "3: Carthage (Coming soon)",
-            disabled: true,
+            label: "3: Carthage",
+            disabled: false,
         },
         {
             label: "4: Zeronet (Coming soon)",
@@ -98,7 +98,7 @@ export class EditorMenubarComponent implements EditorMenubarLike {
             disabled: true,
         },
     ]
-    public selectedNetwork = this.networkOptions[1]
+    public selectedNetwork = this.networkOptions[2]
     public username: string
     public deploy: Subject<void>
 
