@@ -1,3 +1,5 @@
 :host {
     border-left: 1px solid var(--color-base-18);
+    font: var(--font-heading-5);
+    padding: 8px;
 }
