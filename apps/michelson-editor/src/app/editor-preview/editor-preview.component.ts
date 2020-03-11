@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component} from "@angular/core"
 import { Connect, Effect, Effects, State } from "ng-effects"
-import { MICHELSON_TOKENS_PROVIDER } from "@coinless/vs-components"
+import { MICHELSON_STACK_TOKENS_PROVIDER } from "./michelson-stack-grammar"
 import * as Monaco from "monaco-editor"
 import { editor } from "monaco-editor"
 import { from } from "rxjs"
@@ -25,7 +25,7 @@ export class EditorPreviewComponent {
         })
 
         // @ts-ignore
-        Monaco.languages.setMonarchTokensProvider("michelson", MICHELSON_TOKENS_PROVIDER)
+        Monaco.languages.setMonarchTokensProvider("michelson", MICHELSON_STACK_TOKENS_PROVIDER)
 
         this.content = `(Pair Unit (Pair Unit string))`
 
