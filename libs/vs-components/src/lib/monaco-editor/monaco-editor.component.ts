@@ -10,7 +10,7 @@ import { Connect, Effect, Effects, State } from "ng-effects"
 import * as Monaco from "monaco-editor"
 import { editor } from "monaco-editor"
 import { combineLatest, fromEventPattern, Observable } from "rxjs"
-import { MICHELSON_TOKENS_PROVIDER } from "./michelson-language-definition"
+import { MICHELSON_TOKENS_PROVIDER, MICHELSON_COMPLETION_PROVIDER, MICHELSON_HOVER_PROVIDER, MICHELSON_ONTYPE_PROVIDER } from "./michelson-language-definition"
 import { isDefined } from "../utils"
 import { filter, map, switchMap } from "rxjs/operators"
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor
@@ -131,22 +131,28 @@ export class MonacoEditorComponent {
     private createEditor(monaco: any): IStandaloneCodeEditor {
         const langId = "michelson"
 
-        // noinspection TypeScriptValidateJSTypes
         monaco.languages.register({
             id: langId,
             aliases: ["tz"],
         })
 
+        monaco.languages.registerCompletionItemProvider(langId, MICHELSON_COMPLETION_PROVIDER)
         monaco.languages.setMonarchTokensProvider(langId, MICHELSON_TOKENS_PROVIDER)
+        monaco.languages.registerHoverProvider(langId, MICHELSON_HOVER_PROVIDER)
+        monaco.languages.registerOnTypeFormattingEditProvider(langId, MICHELSON_ONTYPE_PROVIDER)
 
         return monaco.editor.create(this.nativeElement, {
             value: ``,
-            language: "michelson",
+            language: langId,
             theme: "vs-dark",
             automaticLayout: true,
             minimap: {
                 enabled: false,
             },
+            // renderWhitespace: "all",
+            useTabStops: true,
+            tabCompletion: "on",
+            formatOnType: true,
         })
     }
 }

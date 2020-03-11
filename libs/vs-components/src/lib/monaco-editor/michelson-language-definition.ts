@@ -1,3 +1,7 @@
+import { root_completions, keyword_completions, type_completions } from "./completions"
+import * as Monaco from 'monaco-editor';
+import { editor } from 'monaco-editor';
+
 const macros = "keyword"
 
 export const MICHELSON_TOKENS_PROVIDER = {
@@ -288,4 +292,51 @@ export const MICHELSON_TOKENS_PROVIDER = {
             [/\/\/.*$/, "comment"],
         ],
     },
+}
+
+export const MICHELSON_HOVER_PROVIDER = {
+    provideHover: function (model: editor.ITextModel, position: Monaco.IPosition) {
+        const word: any = model.getWordAtPosition(position)
+        const range = new Monaco.Range(position.lineNumber, word.startColumn, position.lineNumber, word.endColumn)
+        // @ts-ignore
+        const all = root_completions.concat(keyword_completions).concat(type_completions);
+        // @ts-ignore
+        const str = all.find(x => x.label == word.word)
+        if (str) {
+            return {
+                range,
+                contents: [{ value: str.documentation }],
+            }
+        }
+    }
+}
+
+export const MICHELSON_ONTYPE_PROVIDER = {
+    provideOnTypeFormattingEdits: function (model: editor.ITextModel, position: Monaco.IPosition) {
+        // backend call here
+        // forcing case here
+    }
+}
+
+export const MICHELSON_COMPLETION_PROVIDER = {
+    provideCompletionItems: function(model: editor.ITextModel, position: Monaco.IPosition) {
+        const currentLine = model.getValueInRange({startLineNumber: position.lineNumber, startColumn: 1, endLineNumber: position.lineNumber, endColumn: position.column});
+        const textUntilPosition = model.getValueInRange({startLineNumber: 1, startColumn: 1, endLineNumber: position.lineNumber, endColumn: position.column});
+        const code_match = textUntilPosition.match("code");
+        let suggestions = [];
+        if (code_match) {
+            const operator_match = textUntilPosition.match(/[{;]\s*\w+$/);
+            const type_match = textUntilPosition.match(/[A-Z]+ [a-z]+$/)
+            suggestions = operator_match ?
+                keyword_completions : type_match ?
+                type_completions : [];
+
+        } else {
+            suggestions = textUntilPosition.match(/[a-z]+ [a-z]*$/) ?
+                type_completions: root_completions;
+        }
+        return {
+            suggestions: suggestions
+        };
+    }
 }
