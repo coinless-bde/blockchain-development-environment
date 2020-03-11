@@ -312,24 +312,37 @@ export const MICHELSON_HOVER_PROVIDER = {
 }
 
 export const MICHELSON_ONTYPE_PROVIDER = {
-    provideOnTypeFormattingEdits: function (model: editor.ITextModel, position: Monaco.IPosition) {
+    autoFormatTriggerCharacters: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
+    provideOnTypeFormattingEdits: function (model: editor.ITextModel, position: Monaco.IPosition, ch: string) {
+        const textUntilPosition = model.getValueInRange({startLineNumber: 1, startColumn: 1, endLineNumber: position.lineNumber, endColumn: position.column});
+        const range = new Monaco.Range(position.lineNumber, position.column - 1, position.lineNumber, position.column)
+
+        const code_match = textUntilPosition.match("code");
+        if (code_match) {
+            const operator_match = textUntilPosition.match(/[{;]\s*\w+$/);
+            if (operator_match) {
+                return [{
+                    range,
+                    text: ch.toUpperCase()
+                }]
+            }
+        }
         // backend call here
-        // forcing case here
     }
 }
 
 export const MICHELSON_COMPLETION_PROVIDER = {
     provideCompletionItems: function(model: editor.ITextModel, position: Monaco.IPosition) {
-        const currentLine = model.getValueInRange({startLineNumber: position.lineNumber, startColumn: 1, endLineNumber: position.lineNumber, endColumn: position.column});
         const textUntilPosition = model.getValueInRange({startLineNumber: 1, startColumn: 1, endLineNumber: position.lineNumber, endColumn: position.column});
         const code_match = textUntilPosition.match("code");
-        let suggestions = [];
+        let suggestions: { label: string; documentation: string; insertText: string; }[] = [];
+        const word: any = model.getWordAtPosition(position)
         if (code_match) {
-            const operator_match = textUntilPosition.match(/[{;]\s*\w+$/);
-            const type_match = textUntilPosition.match(/[A-Z]+ [a-z]+$/)
-            suggestions = operator_match ?
-                keyword_completions : type_match ?
-                type_completions : [];
+            if(textUntilPosition.match(/[{;]\s*\w+$/)) {
+                suggestions = keyword_completions
+            } else if (textUntilPosition.match(/[A-Z]+ [a-z]+$/)) {
+                suggestions = type_completions
+            }
 
         } else {
             suggestions = textUntilPosition.match(/[a-z]+ [a-z]*$/) ?

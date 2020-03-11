@@ -153,6 +153,7 @@ export class MonacoEditorComponent {
             useTabStops: true,
             tabCompletion: "on",
             formatOnType: true,
+            acceptSuggestionOnCommitCharacter: true,
         })
     }
 }

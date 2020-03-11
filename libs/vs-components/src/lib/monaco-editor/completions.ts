@@ -60,20 +60,14 @@ export const keyword_completions =  [{
     insertText: "FAILWITH"
 },
                                      {
-    label: "{}",
-    documentation: "Empty sequence.\n\n{} / SA  =>  SA",
-    detail: " 'A   ->   'A",
-    kind: languages.CompletionItemKind.Function,
-    semantics: ["{} / SA  =>  SA"],
-    insertText: "{}"
-},
-                                     {
-    label: "{ I ; C }",
-    documentation: "Sequence.\n\nI ; C / SA  =>  SC        where   I / SA  =>  SB        and   C / SB  =>  SC",
-    detail: " 'A   ->   'C       iff   I \n [ 'A -> 'B ]             C \n [ 'B -> 'C ]",
-    kind: languages.CompletionItemKind.Function,
-    semantics: ["I ; C / SA  =>  SC        where   I / SA  =>  SB        and   C / SB  =>  SC"],
-    insertText: "{ I ; C }"
+    label: "IF",
+    documentation: "Conditional branching.\n\nIF bt bf / True : S  =>  bt / S\nIF bt bf / False : S  =>  bf / S",
+    detail: " bool : 'A   ->   'B       iff   bt \n [ 'A -> 'B ]             bf \n [ 'A -> 'B ]",
+    kind: languages.CompletionItemKind.Snippet,
+    semantics: ["IF bt bf / True : S  =>  bt / S",
+                "IF bt bf / False : S  =>  bf / S"],
+    insertText: "IF\n\t{$0}\n\t{}",
+    insertTextRules: languages.CompletionItemInsertTextRule.InsertAsSnippet,
 },
                                      {
     label: "IF",
@@ -94,6 +88,16 @@ export const keyword_completions =  [{
     insertText: "LOOP"
 },
                                      {
+    label: "LOOP",
+    documentation: "A generic loop.\n\nLOOP body / True : S  =>  body ; LOOP body / S\nLOOP body / False : S  =>  S",
+    detail: " bool : 'A   ->   'A       iff   body \n [ 'A -> bool : 'A ]",
+    kind: languages.CompletionItemKind.Snippet,
+    semantics: ["LOOP body / True : S  =>  body ; LOOP body / S",
+                "LOOP body / False : S  =>  S"],
+    insertText: "LOOP\n\t{$0}",
+    insertTextRules: languages.CompletionItemInsertTextRule.InsertAsSnippet,
+},
+                                     {
     label: "LOOP_LEFT",
     documentation: "A loop with an accumulator.\n\nLOOP_LEFT body / (Left a) : S  =>  body ; LOOP_LEFT body / a : S\nLOOP_LEFT body / (Right b) : S  =>  b : S",
     detail: " (or 'a 'b) : 'A   ->  'b : 'A       iff   body \n [ 'a : 'A -> (or 'a 'b) : 'A ]",
@@ -108,7 +112,7 @@ export const keyword_completions =  [{
     detail: " 'b : 'A   ->   'b : 'C       iff   code \n [ 'A -> 'C ]",
     kind: languages.CompletionItemKind.Function,
     semantics: ["DIP code / x : S  =>  x : S'        where    code / S  =>  S'"],
-    insertText: "DIP"
+    insertText: "DIP;"
 },
                                      {
     label: "EXEC",
@@ -124,7 +128,7 @@ export const keyword_completions =  [{
     detail: " _ : 'A   ->   'A",
     kind: languages.CompletionItemKind.Function,
     semantics: ["DROP / _ : S  =>  S"],
-    insertText: "DROP"
+    insertText: "DROP;"
 },
                                      {
     label: "DUP",
@@ -132,7 +136,7 @@ export const keyword_completions =  [{
     detail: " 'a : 'A   ->   'a : 'a : 'A",
     kind: languages.CompletionItemKind.Function,
     semantics: ["DUP / x : S  =>  x : x : S"],
-    insertText: "DUP"
+    insertText: "DUP;"
 },
                                      {
     label: "SWAP",
@@ -140,7 +144,7 @@ export const keyword_completions =  [{
     detail: " 'a : 'b : 'A   ->   'b : 'a : 'A",
     kind: languages.CompletionItemKind.Function,
     semantics: ["SWAP / x : y : S  =>  y : x : S"],
-    insertText: "SWAP"
+    insertText: "SWAP;"
 },
                                      {
     label: "PUSH",
@@ -156,7 +160,7 @@ export const keyword_completions =  [{
     detail: " 'A   ->   unit : 'A",
     kind: languages.CompletionItemKind.Function,
     semantics: ["UNIT / S  =>  Unit : S"],
-    insertText: "UNIT"
+    insertText: "UNIT;"
 },
                                      {
     label: "LAMBDA",
@@ -173,7 +177,7 @@ export const keyword_completions =  [{
     kind: languages.CompletionItemKind.Function,
     semantics: ["EQ / 0 : S  =>  True : S",
                 "EQ / v : S  =>  False : S        iff v <> 0"],
-    insertText: "EQ"
+    insertText: "EQ;"
 },
                                      {
     label: "NEQ",
@@ -182,7 +186,7 @@ export const keyword_completions =  [{
     kind: languages.CompletionItemKind.Function,
     semantics: ["NEQ / 0 : S  =>  False : S",
                 "NEQ / v : S  =>  True : S        iff v <> 0"],
-    insertText: "NEQ"
+    insertText: "NEQ;"
 },
                                      {
     label: "LT",
@@ -191,7 +195,7 @@ export const keyword_completions =  [{
     kind: languages.CompletionItemKind.Function,
     semantics: ["LT / v : S  =>  True : S        iff  v < 0",
                 "LT / v : S  =>  False : S        iff v >= 0"],
-    insertText: "LT"
+    insertText: "LT;"
 },
                                      {
     label: "GT",
@@ -200,7 +204,7 @@ export const keyword_completions =  [{
     kind: languages.CompletionItemKind.Function,
     semantics: ["GT / v : S  =>  C / True : S        iff  v > 0",
                 "GT / v : S  =>  C / False : S        iff v <= 0"],
-    insertText: "GT"
+    insertText: "GT;"
 },
                                      {
     label: "LE",
@@ -209,7 +213,7 @@ export const keyword_completions =  [{
     kind: languages.CompletionItemKind.Function,
     semantics: ["LE / v : S  =>  True : S        iff  v <= 0",
                 "LE / v : S  =>  False : S        iff v > 0"],
-    insertText: "LE"
+    insertText: "LE;"
 },
                                      {
     label: "GE",
@@ -218,7 +222,7 @@ export const keyword_completions =  [{
     kind: languages.CompletionItemKind.Function,
     semantics: ["GE / v : S  =>  True : S        iff  v >= 0",
                 "GE / v : S  =>  False : S        iff v < 0"],
-    insertText: "GE"
+    insertText: "GE;"
 },
                                      {
     label: "OR",
@@ -226,7 +230,7 @@ export const keyword_completions =  [{
     detail: " bool : bool : 'S   ->   bool : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: ["OR / x : y : S  =>  (x | y) : S"],
-    insertText: "OR"
+    insertText: "OR;"
 },
                                      {
     label: "AND",
@@ -234,7 +238,7 @@ export const keyword_completions =  [{
     detail: " bool : bool : 'S   ->   bool : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: [" AND / x : y : S  =>  (x & y) : S"],
-    insertText: "AND"
+    insertText: "AND;"
 },
                                      {
     label: "XOR",
@@ -242,7 +246,7 @@ export const keyword_completions =  [{
     detail: " bool : bool : 'S   ->   bool : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: [" XOR / x : y : S  =>  (x ^ y) : S"],
-    insertText: "XOR"
+    insertText: "XOR;"
 },
                                      {
     label: "NOT",
@@ -250,7 +254,7 @@ export const keyword_completions =  [{
     detail: " bool : 'S   ->   bool : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: [" NOT / x : S  =>  ~x : S"],
-    insertText: "NOT"
+    insertText: "NOT;"
 },
                                      {
     label: "NEG",
@@ -258,7 +262,7 @@ export const keyword_completions =  [{
     detail: " int : 'S   ->   int : 'S    \n nat : 'S   ->   int : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: [" NEG / x : S  =>  -x : S"],
-    insertText: "NEG"
+    insertText: "NEG;"
 },
                                      {
     label: "ABS",
@@ -266,7 +270,7 @@ export const keyword_completions =  [{
     detail: " int : 'S   ->   nat : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: [" ABS / x : S  =>  abs (x) : S"],
-    insertText: "ABS"
+    insertText: "ABS;"
 },
                                      {
     label: "ADD",
@@ -274,7 +278,7 @@ export const keyword_completions =  [{
     detail: " int : int : 'S   ->   int : 'S    \n int : nat : 'S   ->   int : 'S    \n nat : int : 'S   ->   int : 'S    \n nat : nat : 'S   ->   nat : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: [" ADD / x : y : S  =>  (x + y) : S"],
-    insertText: "ADD"
+    insertText: "ADD;"
 },
                                      {
     label: "SUB",
@@ -282,7 +286,7 @@ export const keyword_completions =  [{
     detail: " int : int : 'S   ->   int : 'S    \n int : nat : 'S   ->   int : 'S    \n nat : int : 'S   ->   int : 'S    \n nat : nat : 'S   ->   int : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: [" SUB / x : y : S  =>  (x - y) : S"],
-    insertText: "SUB"
+    insertText: "SUB;"
 },
                                      {
     label: "MUL",
@@ -290,7 +294,7 @@ export const keyword_completions =  [{
     detail: " int : int : 'S   ->   int : 'S    \n int : nat : 'S   ->   int : 'S    \n nat : int : 'S   ->   int : 'S    \n nat : nat : 'S   ->   nat : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: [" MUL / x : y : S  =>  (x * y) : S"],
-    insertText: "MUL"
+    insertText: "MUL;"
 },
                                      {
     label: "EDIV P",
@@ -369,7 +373,7 @@ export const keyword_completions =  [{
     semantics: ["CONCAT / s : t : S  =>  (s ^ t) : S    :: string list : 'S   -> string : 'S",
                 "CONCAT / {} : S  =>  \"\" : S",
                 "CONCAT / { s ; <ss> } : S  =>  (s ^ r) : S       where CONCAT / { <ss> } : S  =>  r : S"],
-    insertText: "CONCAT"
+    insertText: "CONCAT;"
 },
                                      {
     label: "SIZE",
@@ -377,7 +381,7 @@ export const keyword_completions =  [{
     detail: " string : 'S   ->   nat : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: [""],
-    insertText: "SIZE"
+    insertText: "SIZE;"
 },
                                      {
     label: "SLICE",
@@ -404,7 +408,7 @@ export const keyword_completions =  [{
     detail: " 'a : 'b : 'S   ->   pair 'a 'b : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: ["PAIR / a : b : S  =>  (Pair a b) : S"],
-    insertText: "PAIR"
+    insertText: "PAIR;"
 },
                                      {
     label: "CAR",
@@ -412,7 +416,7 @@ export const keyword_completions =  [{
     detail: " pair 'a _ : 'S   ->   'a : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: ["CAR / (Pair a _) : S  =>  a : S"],
-    insertText: "CAR"
+    insertText: "CAR;"
 },
                                      {
     label: "CDR",
@@ -420,7 +424,7 @@ export const keyword_completions =  [{
     detail: " pair _ 'b : 'S   ->   'b : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: ["CDR / (Pair _ b) : S  =>  b : S"],
-    insertText: "CDR"
+    insertText: "CDR;"
 },
                                      {
     label: "EMPTY_SET",
@@ -428,7 +432,7 @@ export const keyword_completions =  [{
     detail: " 'S   ->   set 'elt : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: ["EMPTY_SET _ / S  =>  {} : S"],
-    insertText: "EMPTY_SET"
+    insertText: "EMPTY_SET;"
 },
                                      {
     label: "MEM",
@@ -465,13 +469,23 @@ export const keyword_completions =  [{
     insertText: "ITER"
 },
                                      {
+    label: "ITER",
+    documentation: "Apply the body expression to each element of a set.   The body sequence has access to the stack.\n\nITER body / {} : S  =>  S\nITER body / { hd ; <tl> } : S  =>  body; ITER body / hd : { <tl> } : S",
+    detail: " (set 'elt) : 'A   ->  'A       iff body \n [ 'elt : 'A -> 'A ]",
+    kind: languages.CompletionItemKind.Snippet,
+    semantics: ["ITER body / {} : S  =>  S",
+                "ITER body / { hd ; <tl> } : S  =>  body; ITER body / hd : { <tl> } : S"],
+    insertText: "ITER\n\t{$0}",
+    insertTextRules: languages.CompletionItemInsertTextRule.InsertAsSnippet,
+},
+                                     {
     label: "SIZE",
     documentation: "Get the cardinality of the set.\n\nSIZE / {} : S  =>  0 : S\nSIZE / { _ ; <tl> } : S  =>  1 + s : S        where SIZE / { <tl> } : S  =>  s : S",
     detail: " set 'elt : 'S -> nat : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: ["SIZE / {} : S  =>  0 : S",
                 "SIZE / { _ ; <tl> } : S  =>  1 + s : S        where SIZE / { <tl> } : S  =>  s : S"],
-    insertText: "SIZE"
+    insertText: "SIZE;"
 },
                                      {
     label: "EMPTY_MAP",
@@ -479,7 +493,7 @@ export const keyword_completions =  [{
     detail: " 'S -> map 'key 'val : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: ["EMPTY_MAP _ _ / S  =>  {} : S"],
-    insertText: "EMPTY_MAP"
+    insertText: "EMPTY_MAP;"
 },
                                      {
     label: "GET",
@@ -633,7 +647,7 @@ export const keyword_completions =  [{
     detail: " 'a : list 'a : 'S   ->   list 'a : 'S",
     kind: languages.CompletionItemKind.Function,
     semantics: ["CONS / a : { <l> } : S  =>  { a ; <l> } : S"],
-    insertText: "CONS"
+    insertText: "CONS;"
 },
                                      {
     label: "NIL",
