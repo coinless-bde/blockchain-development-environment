@@ -5,7 +5,7 @@ import { EXAMPLE } from "./default-documents/example"
 import { MonacoEditorComponent } from "@coinless/vs-components"
 import { AppState, EditorState } from "../editor-state/state"
 import { Dispatch, Select, select, Store } from "../../store/store"
-import { debounceTime, filter, map, retry, tap, withLatestFrom } from "rxjs/operators"
+import { debounceTime, filter, map, retry, take, tap, withLatestFrom } from "rxjs/operators"
 import { EditorService } from "../editor/editor.service"
 import { combineLatest, fromEventPattern, Subject } from "rxjs"
 import { ActivatedRoute } from "@angular/router"
@@ -52,7 +52,7 @@ export class EditorContentComponent {
         private route: ActivatedRoute,
     ) {
         this.tabs = []
-        this.selected = 0
+        this.selected = 1
         this.editorState = this.tabs[this.selected]
         this.saveAction = new Subject()
         this.autoSave = new Subject()
@@ -86,7 +86,6 @@ export class EditorContentComponent {
     public select(): Select<AppState, EditorContentComponent> {
         return {
             editorState: state => state.activeEditor,
-            selected: state => state.activeEditor.id ? 1 : 0,
             tabs: state => state.openFiles
         }
     }

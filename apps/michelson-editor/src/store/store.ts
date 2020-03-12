@@ -218,7 +218,6 @@ export class Store<T extends {[key: string]: any}> extends Observable<T> impleme
             this.subs.add(
             this.dispatcher.pipe(
                 withLatestFrom(nextState.pipe(
-                    startWith(initialState),
                     map(value => JSON.parse(JSON.stringify(value))),
                     pairwise()
                 )),

@@ -5,7 +5,7 @@ import { Action, Dispatch, Events, ofType, select, Store } from "../../store/sto
 import { AutoSaveFile, DeploySmartContract, LoadFile, SaveFile, UpdateActiveEditor } from "../editor-state/commands"
 import { NEVER, Observable } from "rxjs"
 import { EditorService } from "./editor.service"
-import { catchError, filter, ignoreElements, map, mergeMap, switchMap, tap, withLatestFrom } from "rxjs/operators"
+import { catchError, filter, ignoreElements, map, mergeMap, switchMap, take, tap, withLatestFrom } from "rxjs/operators"
 import {
     FileAutoSaved,
     FileAutoSaveError,
@@ -93,9 +93,12 @@ export class Editor {
         return this.events.pipe(
             ofType(FileSaved),
             withLatestFrom(this.route.params),
-            switchMap(([file, { project, user }]) => {
-                const url = this.router.createUrlTree([user, project || "untitled", file.id])
-                return this.router.navigateByUrl(url)
+            switchMap(([file, { project, user, file: fileId }]) => {
+                if (file.id !== fileId) {
+                    const url = this.router.createUrlTree([user, project || "untitled", file.id])
+                    return this.router.navigateByUrl(url)
+                }
+                return NEVER
             })
         )
     }
