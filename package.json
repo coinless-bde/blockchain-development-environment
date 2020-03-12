@@ -41,7 +41,7 @@
         "@nrwl/angular": "9.0.1",
         "core-js": "2.5.4",
         "monaco-editor": "0.20.0",
-        "ng-effects": "9.0.2",
+        "ng-effects": "9.0.3",
         "rxjs": "6.5.0",
         "zone.js": "0.10.2"
     },
