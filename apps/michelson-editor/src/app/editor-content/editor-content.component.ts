@@ -3,24 +3,20 @@ import { changes, Connect, Context, Effect, Effects, State } from "ng-effects"
 import { README } from "./default-documents/readme"
 import { EXAMPLE } from "./default-documents/example"
 import { MonacoEditorComponent } from "@coinless/vs-components"
-import { AppState, appStore } from "../state"
-import { Store } from "../../store/store"
-import { filter, map, retry, switchMap, tap, withLatestFrom } from "rxjs/operators"
+import { AppState } from "../editor-state/state"
+import { Dispatch, Events, select, Store } from "../../store/store"
+import { filter, retry, tap, withLatestFrom } from "rxjs/operators"
 import { EditorService } from "../editor/editor.service"
 import { fromEventPattern, Subject } from "rxjs"
-import { JsonObject } from "../../store/interfaces"
 import { ActivatedRoute, Router } from "@angular/router"
+import { SaveEditorState, SaveFile } from "../editor-state/commands"
 
-interface EditorContentState {
+export interface EditorContentState {
     id: number | null
     title: string
     code: string
     language: string
     readonly: boolean
-}
-
-export function coerceJson(value: any): value is JsonObject {
-    return value
 }
 
 @Component({
@@ -76,6 +72,7 @@ export class EditorContentComponent {
         private renderer: Renderer2,
         private route: ActivatedRoute,
         private router: Router,
+        private events: Events,
     ) {
         const file = this.route.snapshot.paramMap.get("file")
         this.editorState = this.tabs[file ? 1 : 0]
@@ -99,13 +96,9 @@ export class EditorContentComponent {
     //     )
     // }
 
-    @Effect(Store)
+    @Dispatch(SaveEditorState)
     public storeEditorState(state: State<EditorContentComponent>) {
-        return changes(state.editorState).pipe(
-            appStore((store, value) => {
-                store.editorState = coerceJson(value)
-            }),
-        )
+        return changes(state.editorState)
     }
 
     @Effect({ markDirty: true })
@@ -129,8 +122,8 @@ export class EditorContentComponent {
         context: Context<EditorContentComponent>,
     ) {
         return this.store
-            .select(store => store.editor.id)
             .pipe(
+                select(store => store.editor.id),
                 filter(id => id !== null),
                 tap(id => {
                     context.editorState.id = id
@@ -138,7 +131,7 @@ export class EditorContentComponent {
             )
     }
 
-    @Effect(Store)
+    @Dispatch(SaveFile)
     public save(state: State<EditorContentComponent>) {
         const renderer = this.renderer
         const save = fromEventPattern<KeyboardEvent>(listener)
@@ -146,23 +139,10 @@ export class EditorContentComponent {
         function listener(handler: (event: KeyboardEvent) => void) {
             return renderer.listen("document", "keydown.control.s", handler)
         }
+
         return save.pipe(
             tap(event => event.preventDefault()),
             withLatestFrom(state.editorState, (_, editorState) => editorState),
-            switchMap(editor => {
-                const file = Number(this.route.snapshot.paramMap.get("file"))
-                editor.id = file || editor.id
-                return this.editor.save(editor)
-            }),
-            map(res => res.id),
-            tap(id => {
-                const { project, user } = this.route.snapshot.params
-                const url = this.router.createUrlTree([user, project || "untitled", id])
-                this.router.navigateByUrl(url)
-            }),
-            appStore((store, id) => {
-                store.editor.id = id
-            }),
             retry(),
         )
     }

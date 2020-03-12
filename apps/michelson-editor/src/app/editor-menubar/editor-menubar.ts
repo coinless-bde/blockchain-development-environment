@@ -1,15 +1,17 @@
 import { Injectable } from "@angular/core"
-import { changes, Context, Effect, State } from "ng-effects"
-import { Actions, Store } from "../../store/store"
-import { AppState, appStore } from "../state"
-import { catchError, switchMap, tap, withLatestFrom } from "rxjs/operators"
+import { changes, Context, Effect, HostEmitter, latest, State } from "ng-effects"
+import { Commands, Dispatch, Select, Store } from "../../store/store"
+import { AppState } from "../editor-state/state"
+import { tap } from "rxjs/operators"
 import { EditorService } from "../editor/editor.service"
-import { combineLatest, NEVER, Subject } from "rxjs"
+import { combineLatest } from "rxjs"
 import { ActivatedRoute, Router } from "@angular/router"
+import { DeploySmartContract, TogglePreview } from "../editor-state/commands"
+import { truthy } from "../utils"
 
 export interface EditorMenubarLike {
     splitPane: boolean
-    deploy: Subject<void>
+    deploy: HostEmitter<{ id: number | null }>
     projectName: string
     username: string
 }
@@ -18,46 +20,30 @@ export interface EditorMenubarLike {
 export class EditorMenubar {
     constructor(
         private store: Store<AppState>,
-        private actions: Actions,
+        private actions: Commands,
         private editor: EditorService,
         private router: Router,
         private activatedRoute: ActivatedRoute,
     ) {}
 
-    @Effect(Store, { whenRendered: true })
+    @Dispatch(TogglePreview)
     public togglePreview(state: State<EditorMenubarLike>) {
-        return changes(state.splitPane).pipe(
-            appStore((store, value) => {
-                store.splitPane.expanded = value
-            }),
-        )
+        return latest({
+            expanded: changes(state.splitPane)
+        })
     }
 
-    @Effect("splitPane")
-    public splitPane(_: State<EditorMenubarLike>) {
-        return this.store.select(store => store.splitPane.expanded)
+    @Select()
+    public splitPane(): Select<AppState, EditorMenubarLike> {
+        return {
+            splitPane: state => state.panes.expanded
+        }
     }
 
-    @Effect()
+    @Dispatch(DeploySmartContract)
     public deploy(state: State<EditorMenubarLike>, context: Context<EditorMenubarLike>) {
         return context.deploy.pipe(
-            withLatestFrom(this.store.select(store => store.editor), (_, editor) => editor),
-            switchMap(() => {
-                const id = Number(this.activatedRoute.snapshot.paramMap.get("file"))
-                if (id) {
-                    return this.editor.deploy({ id }).pipe(
-                        catchError(error => {
-                            console.error(error)
-                            window.alert("Error in deployment, see console for details")
-                            return NEVER
-                        }),
-                        tap(() => {
-                            window.alert("Deployment succeeded!")
-                        }),
-                    )
-                }
-                return NEVER
-            }),
+            truthy()
         )
     }
 

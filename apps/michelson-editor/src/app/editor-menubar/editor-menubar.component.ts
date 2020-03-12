@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
-import { Connect, Effects, effects } from "ng-effects"
+import { Connect, Effects, HostEmitter } from "ng-effects"
 import { EditorMenubar, EditorMenubarLike } from "./editor-menubar"
-import { Subject } from "rxjs"
 import { ActivatedRoute } from "@angular/router"
 
 @Component({
@@ -24,7 +23,7 @@ import { ActivatedRoute } from "@angular/router"
             />
 
             <div class="documentDeploy">
-                <button bde-button color="primary" class="deployButton" (pressed)="deploy.next()">
+                <button bde-button color="primary" class="deployButton" (pressed)="deploy.next({ id: id })">
                     Deploy
                 </button>
             </div>
@@ -100,14 +99,17 @@ export class EditorMenubarComponent implements EditorMenubarLike {
     ]
     public selectedNetwork = this.networkOptions[2]
     public username: string
-    public deploy: Subject<void>
+    public deploy: HostEmitter<{ id: number | null }>
+    public id: number | null
 
     constructor(connect: Connect, route: ActivatedRoute) {
-        const { project, user } = route.snapshot.params
+        const { project, user, id } = route.snapshot.params
         this.username = user || "anonymous"
         this.projectName = project || ""
         this.splitPane = true
-        this.deploy = new Subject()
+        this.deploy = new HostEmitter()
+        this.id = id === undefined ? null : Number(id)
+
         connect(this)
     }
 }

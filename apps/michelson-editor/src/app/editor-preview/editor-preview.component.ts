@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component} from "@angular/core"
+import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { Connect, Effect, Effects, State } from "ng-effects"
 import { MICHELSON_STACK_TOKENS_PROVIDER } from "./michelson-stack-grammar"
 import * as Monaco from "monaco-editor"
 import { editor } from "monaco-editor"
 import { from } from "rxjs"
-import { map } from 'rxjs/operators'
 
 @Component({
     selector: "bde-editor-preview",

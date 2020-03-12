@@ -18,10 +18,10 @@ import {
 } from "@coinless/vs-components"
 import { EditorTabsComponent } from "./editor-tabs/editor-tabs.component"
 import { EditorTabComponent } from "./editor-tabs/editor-tab/editor-tab.component"
-import { withInitialState } from "../store/store"
-import { AppState, initialState } from "./state"
 import { HttpClientModule } from "@angular/common/http"
-import { effects } from "ng-effects"
+import { StoreModule } from "../store/store"
+import * as reducers from "./editor-state/reducers"
+import { initialState } from "./editor-state/state"
 
 @NgModule({
     declarations: [
@@ -66,8 +66,9 @@ import { effects } from "ng-effects"
         CodiconModule,
         MonacoEditorModule,
         HttpClientModule,
+        StoreModule.config(reducers, initialState)
     ],
-    providers: [withInitialState<AppState>(initialState),],
+    providers: [],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
