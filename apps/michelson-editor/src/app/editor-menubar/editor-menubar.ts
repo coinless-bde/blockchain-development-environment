@@ -7,7 +7,7 @@ import { EditorService } from "../editor/editor.service"
 import { combineLatest } from "rxjs"
 import { ActivatedRoute, Router } from "@angular/router"
 import { DeploySmartContract, TogglePreview } from "../editor-state/commands"
-import { truthy } from "../utils"
+import { isTruthy } from "../utils"
 
 export interface EditorMenubarLike {
     splitPane: boolean
@@ -43,7 +43,7 @@ export class EditorMenubar {
     @Dispatch(DeploySmartContract)
     public deploy(state: State<EditorMenubarLike>, context: Context<EditorMenubarLike>) {
         return context.deploy.pipe(
-            truthy()
+            isTruthy()
         )
     }
 

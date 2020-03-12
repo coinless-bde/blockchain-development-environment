@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { HttpClient } from "@angular/common/http"
-import { mapTo } from "rxjs/operators"
+import { map, mapTo } from "rxjs/operators"
 
 export interface DeployPayload {
     id: number
@@ -17,12 +17,12 @@ export interface UpdatePayload {
 }
 
 export interface SavePayload {
-    id: number | null
+    id?: number | null
     code: string
 }
 
 export interface CreatePayload {
-    id: null
+    id?: null
     code: string
 }
 
@@ -41,7 +41,12 @@ export class EditorService {
     constructor(private http: HttpClient) {}
 
     public load(id: number) {
-        return this.http.get<LoadResponse>("/api/" + id)
+        return this.http.get<LoadResponse>("/api/" + id).pipe(
+            map(({ code }) => ({
+                id,
+                code
+            }))
+        )
     }
 
     public create(payload: CreatePayload) {
@@ -49,16 +54,20 @@ export class EditorService {
     }
 
     public autosave(payload: AutosavePayload) {
-        return this.http.post("/api/auto_save", payload)
+        return this.http.post("/api/auto_save", payload, {
+            responseType: "text"
+        })
     }
 
     public update(payload: UpdatePayload) {
-        return this.http.post("/api/update", payload).pipe(mapTo({ id: payload.id }))
+        return this.http.post("/api/update", payload, {
+            responseType: "text"
+        }).pipe(mapTo({ id: payload.id }))
     }
 
     public save(payload: SavePayload) {
         const { id } = payload
-        return id === null ? this.create({ ...payload, id }) : this.update({ ...payload, id })
+        return typeof id === "number" ? this.update({ ...payload, id }) : this.create({ ...payload, id })
     }
 
     public deploy(payload: DeployPayload) {

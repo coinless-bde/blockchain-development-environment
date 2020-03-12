@@ -10,13 +10,17 @@ export interface JsonObject {
 export abstract class Command<T> {
     abstract type: string
     constructor(payload: T) {
-        Object.assign(this, payload)
+        if (typeof payload === "object") {
+            Object.assign(this, payload)
+        }
     }
 }
 
 export abstract class Event<T> {
     abstract type: string
     constructor(payload: T) {
-        Object.assign(this, payload)
+        if (typeof payload === "object") {
+            Object.assign(this, payload)
+        }
     }
 }

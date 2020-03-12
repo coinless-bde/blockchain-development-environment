@@ -43,7 +43,7 @@ export class EditorTabsComponent implements SelectLike {
     public options = undefined
 
     @Output()
-    public selectedChange = new EventEmitter<number>()
+    public selectedChange = new EventEmitter<any>()
 
     @Output()
     public pressed = new EventEmitter<PressedEvent>()

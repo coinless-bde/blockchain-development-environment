@@ -1,29 +1,22 @@
 import { ChangeDetectionStrategy, Component, Renderer2, ViewChild } from "@angular/core"
-import { changes, Connect, Context, Effect, Effects, State } from "ng-effects"
+import { Connect, Context, Effect, Effects, HostEmitter, State } from "ng-effects"
 import { README } from "./default-documents/readme"
 import { EXAMPLE } from "./default-documents/example"
 import { MonacoEditorComponent } from "@coinless/vs-components"
-import { AppState } from "../editor-state/state"
-import { Dispatch, Events, select, Store } from "../../store/store"
-import { filter, retry, tap, withLatestFrom } from "rxjs/operators"
+import { AppState, EditorState } from "../editor-state/state"
+import { Dispatch, Select, select, Store } from "../../store/store"
+import { debounceTime, filter, map, retry, tap, withLatestFrom } from "rxjs/operators"
 import { EditorService } from "../editor/editor.service"
-import { fromEventPattern, Subject } from "rxjs"
-import { ActivatedRoute, Router } from "@angular/router"
-import { SaveEditorState, SaveFile } from "../editor-state/commands"
-
-export interface EditorContentState {
-    id: number | null
-    title: string
-    code: string
-    language: string
-    readonly: boolean
-}
+import { combineLatest, fromEventPattern, Subject } from "rxjs"
+import { ActivatedRoute } from "@angular/router"
+import { AutoSaveFile, SaveFile, UpdateActiveEditor } from "../editor-state/commands"
+import { isTruthy } from "../utils"
 
 @Component({
     selector: "bde-editor-content",
     template: `
-        <bde-editor-tabs [(selected)]="editorState">
-            <bde-editor-tab class="tab" *ngFor="let tab of tabs" [value]="tab">
+        <bde-editor-tabs [(selected)]="selected">
+            <bde-editor-tab class="tab" *ngFor="let tab of tabs; let index = index" [value]="index">
                 <bde-codicon icon="list-selection"></bde-codicon>
                 <span>{{ tab.title }}</span>
                 <bde-codicon icon="close"></bde-codicon>
@@ -33,7 +26,7 @@ export interface EditorContentState {
             class="editor"
             [document]="editorState.code"
             [language]="editorState.language"
-            (valueChanges)="editorState.code = $event; autoSave.next()"
+            (valueChanges)="valueChanges($event)"
         ></bde-monaco-editor>
     `,
     styleUrls: ["./editor-content.component.css"],
@@ -41,26 +34,12 @@ export interface EditorContentState {
     providers: [Effects],
 })
 export class EditorContentComponent {
-    public tabs: EditorContentState[] = [
-        {
-            id: null,
-            title: "README.md",
-            code: README,
-            language: "markdown",
-            readonly: true,
-        },
-        {
-            id: null,
-            title: "example.tz",
-            code: EXAMPLE,
-            language: "michelson",
-            readonly: false,
-        },
-    ]
-
-    public editorState: EditorContentState
+    public tabs: EditorState[]
+    public editorState: EditorState
     public saveAction: Subject<void>
     public autoSave: Subject<void>
+    public valueChanges: HostEmitter<string>
+    public selected: number
 
     @ViewChild(MonacoEditorComponent)
     public monaco?: MonacoEditorComponent
@@ -71,64 +50,45 @@ export class EditorContentComponent {
         private editor: EditorService,
         private renderer: Renderer2,
         private route: ActivatedRoute,
-        private router: Router,
-        private events: Events,
     ) {
-        const file = this.route.snapshot.paramMap.get("file")
-        this.editorState = this.tabs[file ? 1 : 0]
+        this.tabs = []
+        this.selected = 0
+        this.editorState = this.tabs[this.selected]
         this.saveAction = new Subject()
         this.autoSave = new Subject()
+        this.valueChanges = new HostEmitter()
         connect(this)
     }
 
-    // @Effect()
-    // public autosave(state: State<EditorContentComponent>, context: Context<EditorContentComponent>) {
-    //     state.autoSave.subscribe(() => {
-    //         console.log('autosave!')
-    //     })
-    //     return state.autoSave.pipe(
-    //         debounceTime(5000), //         switchMap(() => {
-    //             console.log('context', context.editorState)
-    //             const id = context.editorState.id
-    //             return id === null ? NEVER : this.editor.autosave({ ...context.editorState, id })
-    //         }),
-    //         retry()
-    //     )
-    // }
+    @Dispatch(AutoSaveFile)
+    public autosave(state: State<EditorContentComponent>) {
+        return this.persistValueChanges(state).pipe(
+            debounceTime(5000)
+        )
+    }
 
-    @Dispatch(SaveEditorState)
+    @Dispatch(UpdateActiveEditor)
+    public persistValueChanges(state: State<EditorContentComponent>) {
+        return this.valueChanges.pipe(
+            withLatestFrom(state.editorState, (code, editorState) => ({ ...editorState, code })),
+        )
+    }
+
+    @Dispatch(UpdateActiveEditor)
     public storeEditorState(state: State<EditorContentComponent>) {
-        return changes(state.editorState)
+        return combineLatest(state.selected, state.tabs).pipe(
+            map(([index, tabs]) => tabs[index]),
+            isTruthy()
+        )
     }
 
-    @Effect({ markDirty: true })
-    public loadFile(
-        state: State<EditorContentComponent>,
-        context: Context<EditorContentComponent>,
-    ) {
-        const file = this.route.snapshot.paramMap.get("file")
-        if (file) {
-            return this.editor.load(Number(file)).pipe(
-                tap(res => {
-                    context.tabs[1].code = res.code
-                }),
-            )
+    @Select()
+    public select(): Select<AppState, EditorContentComponent> {
+        return {
+            editorState: state => state.activeEditor,
+            selected: state => state.activeEditor.id ? 1 : 0,
+            tabs: state => state.openFiles
         }
-    }
-
-    @Effect()
-    public updateId(
-        state: State<EditorContentComponent>,
-        context: Context<EditorContentComponent>,
-    ) {
-        return this.store
-            .pipe(
-                select(store => store.editor.id),
-                filter(id => id !== null),
-                tap(id => {
-                    context.editorState.id = id
-                }),
-            )
     }
 
     @Dispatch(SaveFile)

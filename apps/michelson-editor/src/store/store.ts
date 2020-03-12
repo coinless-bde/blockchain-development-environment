@@ -1,6 +1,35 @@
-import { merge, Observable, OperatorFunction, queueScheduler, scheduled, Subject } from "rxjs"
-import { Inject, Injectable, InjectionToken, isDevMode, ModuleWithProviders, NgModule, Type } from "@angular/core"
-import { distinctUntilChanged, filter, map, pairwise, scan, startWith, withLatestFrom } from "rxjs/operators"
+import {
+    BehaviorSubject,
+    merge,
+    Observable,
+    OperatorFunction,
+    queueScheduler,
+    scheduled,
+    Subject,
+    Subscription,
+} from "rxjs"
+import {
+    EventEmitter,
+    Inject,
+    Injectable,
+    InjectionToken,
+    isDevMode,
+    ModuleWithProviders,
+    NgModule,
+    OnDestroy,
+    Type,
+} from "@angular/core"
+import {
+    distinctUntilChanged,
+    filter,
+    map,
+    pairwise,
+    scan,
+    share,
+    shareReplay,
+    startWith,
+    withLatestFrom,
+} from "rxjs/operators"
 import { Effect, EffectAdapter, EffectMetadata } from "ng-effects"
 import { Command as CommandType, Event as EventType } from "./interfaces"
 import { diff } from "./devtools"
@@ -17,17 +46,25 @@ export interface EventConstructor<TType extends string, TReturn = { type: TType 
 }
 
 export function Command<T extends string>(type: T) {
-    return class extends CommandType<T> {
+    const command = class extends CommandType<T> {
         static type = type
-        type = type
+        type!: T
     } as EventConstructor<T>
+    Object.defineProperty(command.prototype, "type", {
+        value: type
+    })
+    return command
 }
 
 export function Event<T extends string>(type: T) {
-    return class extends EventType<T> {
+    const event = class extends EventType<T> {
         static type = type
-        type = type
+        type!: T
     } as EventConstructor<T>
+    Object.defineProperty(event.prototype, "type", {
+        value: type
+    })
+    return event
 }
 
 export function ofType<T extends Type<any>>(type: T): OperatorFunction<Event, InstanceType<T>>
@@ -108,6 +145,7 @@ export class SelectAdapter<T, U> implements EffectAdapter<() => Select<T, U>> {
 
     public create(mapState: SelectEffectFn, metadata: EffectMetadata) {
         metadata.options.assign = true
+        metadata.options.markDirty = true
 
         const sources = Object.entries(mapState()).map(([prop, selector]) =>
             this.store.pipe(
@@ -132,7 +170,11 @@ export class DispatchAdapter<T extends Event> implements EffectAdapter<T, Type<T
 }
 
 @Injectable({ providedIn: "root" })
-export class Dispatcher extends Subject<Event> {}
+export class Dispatcher extends EventEmitter<Event> {
+    constructor() {
+        super(true)
+    }
+}
 
 export type Reducer<T> = (state: T, action: Event) => T
 export type ReducerMap<T> = [keyof T, Reducer<T[keyof T]>][]
@@ -146,7 +188,9 @@ export const STATE = new InjectionToken("STATE")
 export const REDUCERS = new InjectionToken("REDUCERS")
 
 @Injectable()
-export class Store<T extends {[key: string]: any}> extends Observable<T> {
+export class Store<T extends {[key: string]: any}> extends Observable<T> implements OnDestroy {
+    private subs: Subscription
+
     dispatch(action: Event) {
         this.dispatcher.next(action)
     }
@@ -154,19 +198,24 @@ export class Store<T extends {[key: string]: any}> extends Observable<T> {
     constructor(private dispatcher: Dispatcher, @Inject(STATE) initialState: T, @Inject(REDUCERS) reducers: ReducerMap<T>) {
         super(subscriber => nextState.subscribe(subscriber))
 
-        const nextState = scheduled(this.dispatcher.pipe(
-            scan<Event, T>((state, action) =>
-                reducers.reduce((_state, [key, reducer]) => {
-                    const returnValue: any = reducer(_state[key], action)
-                    _state[key] = returnValue === _state ? _state : Object.assign({}, _state[key], returnValue)
-                    return _state
-                }, state),
-                initialState
-            ),
-            startWith(initialState),
-        ), queueScheduler)
+        const nextState = new BehaviorSubject(initialState)
+        this.subs = new Subscription()
+        this.subs.add(
+            scheduled(this.dispatcher.pipe(
+                scan<Event, T>((state, action) =>
+                    reducers.reduce((_state, [key, reducer]) => {
+                        const returnValue: any = reducer(_state[key], action)
+                        const seed = Array.isArray(returnValue) ? [] : {}
+                        _state[key] = returnValue !== _state[key] ? Object.assign(seed, _state[key], returnValue) : _state[key]
+                        return _state
+                    }, state),
+                    initialState
+                ),
+            ), queueScheduler).subscribe(nextState)
+        )
 
         if (isDevMode()) {
+            this.subs.add(
             this.dispatcher.pipe(
                 withLatestFrom(nextState.pipe(
                     startWith(initialState),
@@ -183,8 +232,12 @@ export class Store<T extends {[key: string]: any}> extends Observable<T> {
                     console.log("[Diff]", diff(previous, current))
                     console.groupEnd()
                 }
-            })
+            }))
         }
+    }
+
+    ngOnDestroy() {
+        this.subs.unsubscribe()
     }
 }
 
