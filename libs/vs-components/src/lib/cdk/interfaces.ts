@@ -1,6 +1,6 @@
 import { merge, Subject } from "rxjs"
 import { QueryList, TemplateRef } from "@angular/core"
-import { ButtonLike } from "../button/button"
+import { ButtonLike } from "./button"
 
 export interface SelectLike<T = any> extends ButtonLike {
     expanded: boolean

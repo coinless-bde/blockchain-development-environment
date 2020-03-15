@@ -5,6 +5,7 @@ import { Connect, Effects, effects } from "ng-effects"
 @Component({
     selector: "bde-editor",
     template: `
+        <bde-editor-toolbar></bde-editor-toolbar>
         <bde-editor-menubar></bde-editor-menubar>
         <bde-editor-content></bde-editor-content>
         <bde-editor-preview></bde-editor-preview>

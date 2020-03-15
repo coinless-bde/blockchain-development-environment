@@ -7,9 +7,9 @@ import {
     Output,
 } from "@angular/core"
 import { Connect, Effects, effects } from "ng-effects"
-import { OptionLike } from "./interfaces"
-import { Button, PressedEvent } from "../button/button"
-import { Option } from "./option"
+import { OptionLike } from "../cdk/interfaces"
+import { Button, PressedEvent } from "../cdk/button"
+import { Option } from "../cdk/option"
 
 @Component({
     selector: "bde-option, [bdeOption]",

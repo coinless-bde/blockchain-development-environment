@@ -23,7 +23,7 @@ import { ActivatedRoute } from "@angular/router"
             />
 
             <div class="documentDeploy">
-                <button bde-button color="primary" class="deployButton" (pressed)="deploy.next({ id: id })">
+                <button bde-button color="primary" class="deployButton" (pressed)="deploy.next(id)">
                     Deploy
                 </button>
             </div>
@@ -99,7 +99,7 @@ export class EditorMenubarComponent implements EditorMenubarLike {
     ]
     public selectedNetwork = this.networkOptions[2]
     public username: string
-    public deploy: HostEmitter<{ id: number | null }>
+    public deploy: HostEmitter<number | null>
     public id: number | null
 
     constructor(connect: Connect, route: ActivatedRoute) {

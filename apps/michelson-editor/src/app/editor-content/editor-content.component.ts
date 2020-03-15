@@ -22,12 +22,19 @@ import { isTruthy } from "../utils"
                 <bde-codicon icon="close"></bde-codicon>
             </bde-editor-tab>
         </bde-editor-tabs>
-        <bde-monaco-editor
-            class="editor"
-            [document]="editorState.code"
-            [language]="editorState.language"
-            (valueChanges)="valueChanges($event)"
-        ></bde-monaco-editor>
+        <ng-container [ngSwitch]="selected">
+            <ng-container *ngSwitchCase="2">
+                <bde-editor-deployment></bde-editor-deployment>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+                <bde-monaco-editor
+                    class="editor"
+                    [document]="editorState.code"
+                    [language]="editorState.language"
+                    (valueChanges)="valueChanges($event)"
+                ></bde-monaco-editor>
+            </ng-container>
+        </ng-container>
     `,
     styleUrls: ["./editor-content.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,7 +56,6 @@ export class EditorContentComponent {
         private store: Store<AppState>,
         private editor: EditorService,
         private renderer: Renderer2,
-        private route: ActivatedRoute,
     ) {
         this.tabs = []
         this.selected = 1
@@ -86,7 +92,7 @@ export class EditorContentComponent {
     public select(): Select<AppState, EditorContentComponent> {
         return {
             editorState: state => state.activeEditor,
-            tabs: state => state.openFiles
+            tabs: state => state.openTabs
         }
     }
 
@@ -102,6 +108,7 @@ export class EditorContentComponent {
         return save.pipe(
             tap(event => event.preventDefault()),
             withLatestFrom(state.editorState, (_, editorState) => editorState),
+            filter(editorState => !editorState.readonly),
             retry(),
         )
     }

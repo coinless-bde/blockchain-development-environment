@@ -2,11 +2,11 @@ import {
     ChangeDetectionStrategy,
     Component,
     ElementRef,
-    EventEmitter,
+    EventEmitter, Inject,
     Input,
     Output,
 } from "@angular/core"
-import { Connect, Effect, Effects, State } from "ng-effects"
+import { Connect, Context, Effect, Effects, State } from "ng-effects"
 import * as Monaco from "monaco-editor"
 import { editor } from "monaco-editor"
 import { combineLatest, fromEventPattern, Observable } from "rxjs"
@@ -14,6 +14,7 @@ import { MICHELSON_TOKENS_PROVIDER, MICHELSON_COMPLETION_PROVIDER, MICHELSON_HOV
 import { isDefined } from "../utils"
 import { filter, map, switchMap } from "rxjs/operators"
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor
+import { IMonaco, MONACO, MonacoEditorService } from "./monaco-editor.service"
 
 interface Window {
     require: any
@@ -40,17 +41,17 @@ export class MonacoEditorComponent {
 
     public instance?: IStandaloneCodeEditor
 
-    public monaco?: typeof Monaco
+    public monaco: IMonaco
 
     private readonly nativeElement: HTMLElement
 
-    constructor(elementRef: ElementRef, connect: Connect) {
+    constructor(elementRef: ElementRef, @Inject(MONACO) monaco: IMonaco, connect: Connect) {
         this.nativeElement = elementRef.nativeElement
         this.valueChanges = new EventEmitter()
         this.document = ""
         this.language = "plaintext"
         this.instance = undefined
-        this.monaco = undefined
+        this.monaco = monaco
         connect(this)
     }
 
@@ -96,36 +97,9 @@ export class MonacoEditorComponent {
         )
     }
 
-    @Effect({ assign: true, whenRendered: true })
-    public mountEditor({  }: State<MonacoEditorComponent>) {
-        return new Observable<Partial<MonacoEditorComponent>>(subscriber => {
-            const onGotAmdLoader = () => {
-                // Load monaco
-                window.require(["vs/editor/editor.main"], (monaco: any) => {
-                    const instance = this.createEditor(monaco)
-
-                    subscriber.next({
-                        instance,
-                        monaco,
-                    })
-                })
-            }
-            // Load AMD loader if necessary
-            if (!window.require) {
-                const loaderScript = document.createElement("script")
-                loaderScript.type = "text/javascript"
-                loaderScript.src = "vs/loader.js"
-                loaderScript.addEventListener("load", onGotAmdLoader)
-                document.body.appendChild(loaderScript)
-            } else {
-                onGotAmdLoader()
-            }
-            return () => {
-                if (this.instance) {
-                    this.instance.dispose()
-                }
-            }
-        })
+    @Effect({ whenRendered: true })
+    public mountEditor(@Context() context: MonacoEditorComponent) {
+        context.instance = this.createEditor(this.monaco)
     }
 
     private createEditor(monaco: any): IStandaloneCodeEditor {

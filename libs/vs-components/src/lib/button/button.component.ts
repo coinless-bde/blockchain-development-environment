@@ -7,7 +7,7 @@ import {
     Output,
 } from "@angular/core"
 import { Connect, Effects, effects } from "ng-effects"
-import { Button, ButtonLike, PressedEvent } from "./button"
+import { Button, ButtonLike, PressedEvent } from "../cdk/button"
 
 @Component({
     selector: "bde-button, [bde-button], [bde-flush-button]",

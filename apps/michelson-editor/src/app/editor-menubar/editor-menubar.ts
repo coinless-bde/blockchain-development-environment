@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { changes, Context, Effect, HostEmitter, latest, State } from "ng-effects"
 import { Commands, Dispatch, Select, Store } from "../../store/store"
 import { AppState } from "../editor-state/state"
-import { tap } from "rxjs/operators"
+import { map, tap } from "rxjs/operators"
 import { EditorService } from "../editor/editor.service"
 import { combineLatest } from "rxjs"
 import { ActivatedRoute, Router } from "@angular/router"
@@ -11,7 +11,7 @@ import { isTruthy } from "../utils"
 
 export interface EditorMenubarLike {
     splitPane: boolean
-    deploy: HostEmitter<{ id: number | null }>
+    deploy: HostEmitter<number | null>
     projectName: string
     username: string
 }
@@ -43,7 +43,8 @@ export class EditorMenubar {
     @Dispatch(DeploySmartContract)
     public deploy(state: State<EditorMenubarLike>, context: Context<EditorMenubarLike>) {
         return context.deploy.pipe(
-            isTruthy()
+            isTruthy(),
+            map(id => ({ id }))
         )
     }
 

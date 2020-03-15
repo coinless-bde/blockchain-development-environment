@@ -9,7 +9,7 @@ import { EXAMPLE } from "../editor-content/default-documents/example"
 export interface AppState {
     panes: PanesState
     activeEditor: EditorState
-    openFiles: EditorState[]
+    openTabs: EditorState[]
 }
 
 export interface PanesState {
@@ -35,7 +35,7 @@ export const initialState: AppState = {
         language: "plaintext",
         readonly: false
     },
-    openFiles: [
+    openTabs: [
         {
             title: "README.md",
             code: README,
@@ -47,6 +47,12 @@ export const initialState: AppState = {
             code: EXAMPLE,
             language: "michelson",
             readonly: false,
+        },
+        {
+            title: "Deploy",
+            code: "",
+            language: "plaintext",
+            readonly: true,
         },
     ]
 }

@@ -12,10 +12,10 @@ import {
     ViewChild,
 } from "@angular/core"
 import { Connect, Effects, effects } from "ng-effects"
-import { Select } from "./select"
-import { DropdownLike, OptionLike, SelectLike } from "./interfaces"
-import { Button } from "../button/button"
-import { Dropdown } from "./dropdown"
+import { Select } from "../cdk/select"
+import { DropdownLike, OptionLike, SelectLike } from "../cdk/interfaces"
+import { Button } from "../cdk/button"
+import { Dropdown } from "../cdk/dropdown"
 
 @Component({
     selector: "bde-select",

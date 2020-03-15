@@ -226,9 +226,9 @@ export class Store<T extends {[key: string]: any}> extends Observable<T> impleme
                 if (type) {
                     console.groupCollapsed(`[${type}]`, action.type)
                     console.log("[Payload]", JSON.parse(JSON.stringify(action)))
-                    console.log("[Before]", previous)
-                    console.log("[After]", current)
-                    console.log("[Diff]", diff(previous, current))
+                    console.log("[Before] ", previous)
+                    console.log("[After]  ", current)
+                    console.log("[Diff]   ", diff(previous, current))
                     console.groupEnd()
                 }
             }))

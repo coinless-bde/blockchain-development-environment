@@ -1,5 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser"
-import { NgModule } from "@angular/core"
+import { APP_INITIALIZER, NgModule } from "@angular/core"
 
 import { AppComponent } from "./app.component"
 import { RouterModule } from "@angular/router"
@@ -13,7 +13,7 @@ import { EditorTerminalComponent } from "./editor-terminal/editor-terminal.compo
 import {
     ButtonModule,
     CodiconModule,
-    MonacoEditorModule,
+    MonacoEditorModule, MonacoEditorService,
     SelectModule,
 } from "@coinless/vs-components"
 import { EditorTabsComponent } from "./editor-tabs/editor-tabs.component"
@@ -21,7 +21,12 @@ import { EditorTabComponent } from "./editor-tabs/editor-tab/editor-tab.componen
 import { HttpClientModule } from "@angular/common/http"
 import { StoreModule } from "../store/store"
 import * as reducers from "./editor-state/reducers"
-import { initialState } from "./editor-state/state"
+import { initialState } from "./editor-state/state";
+import { EditorDeploymentComponent } from './editor-deployment/editor-deployment.component'
+
+export function loadMonaco() {
+    return () => new Promise(resolve => MonacoEditorService.loadMonaco(resolve))
+}
 
 @NgModule({
     declarations: [
@@ -35,6 +40,7 @@ import { initialState } from "./editor-state/state"
         EditorTerminalComponent,
         EditorTabsComponent,
         EditorTabComponent,
+        EditorDeploymentComponent,
     ],
     imports: [
         BrowserModule,
@@ -66,9 +72,16 @@ import { initialState } from "./editor-state/state"
         CodiconModule,
         MonacoEditorModule,
         HttpClientModule,
-        StoreModule.config(reducers, initialState)
+        StoreModule.config(reducers, initialState),
     ],
-    providers: [],
+    providers: [
+        {
+            provide: APP_INITIALIZER,
+            useFactory: loadMonaco,
+            deps: [],
+            multi: true
+        }
+    ],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

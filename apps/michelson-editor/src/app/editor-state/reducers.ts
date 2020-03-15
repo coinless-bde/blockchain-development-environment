@@ -29,7 +29,7 @@ export function panes(state: PanesState, action: Actions): Partial<PanesState> {
     return state
 }
 
-export function openFiles(state: EditorState[], action: Actions): EditorState[] {
+export function openTabs(state: EditorState[], action: Actions): EditorState[] {
     switch(action.type) {
         case UpdateActiveEditor.type: {
             const activeFile = state.find(file => file.title === action.title)

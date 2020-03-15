@@ -4,7 +4,7 @@ import { map, mapTo, mergeAll, switchMap, tap } from "rxjs/operators"
 import { queryList } from "../utils"
 import { OptionLike, SelectLike } from "./interfaces"
 import { Observable } from "rxjs"
-import { ButtonLike } from "../.."
+import { ButtonLike } from "../../index"
 
 export function optionSelected<T>(
     source: Observable<QueryList<OptionLike<T>> | undefined>,
