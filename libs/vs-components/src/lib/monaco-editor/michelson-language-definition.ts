@@ -321,10 +321,10 @@ export const MICHELSON_ONTYPE_PROVIDER = {
         if (code_match) {
             const operator_match = textUntilPosition.match(/[{;]\s*\w+$/);
             if (operator_match) {
-                return [{
+                model.applyEdits([{
                     range,
                     text: ch.toUpperCase()
-                }]
+                }])
             }
         }
         // backend call here
