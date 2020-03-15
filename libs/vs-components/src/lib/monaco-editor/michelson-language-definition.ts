@@ -297,6 +297,9 @@ export const MICHELSON_TOKENS_PROVIDER = {
 export const MICHELSON_HOVER_PROVIDER = {
     provideHover: function (model: editor.ITextModel, position: Monaco.IPosition) {
         const word: any = model.getWordAtPosition(position)
+        if (!word) {
+            return
+        }
         const range = new Monaco.Range(position.lineNumber, word.startColumn, position.lineNumber, word.endColumn)
         // @ts-ignore
         const all = root_completions.concat(keyword_completions).concat(type_completions);
