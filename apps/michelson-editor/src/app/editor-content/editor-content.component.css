@@ -8,6 +8,10 @@ bde-editor-tabs {
     height: 40px;
 }
 
+bde-editor-tab > span {
+    flex: 1;
+}
+
 bde-monaco-editor {
     flex: 1;
     position: absolute;

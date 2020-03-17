@@ -1,13 +1,6 @@
-import {
-    ChangeDetectionStrategy,
-    Component,
-    EventEmitter,
-    HostBinding,
-    Input,
-    Output,
-} from "@angular/core"
-import { Connect, Effects, effects } from "ng-effects"
-import { Button, Option, OptionLike, PressedEvent } from "@coinless/vs-components"
+import { ChangeDetectionStrategy, Component, HostBinding, Input, Output } from "@angular/core"
+import { Connect, Effects, HostEmitter, HostRef } from "ng-effects"
+import { Button, Option, OptionLike, PressEvent } from "@coinless/vs-components"
 
 @Component({
     selector: "bde-editor-tab",
@@ -20,7 +13,7 @@ import { Button, Option, OptionLike, PressedEvent } from "@coinless/vs-component
         Effects, Option, Button,
         {
             provide: OptionLike,
-            useExisting: EditorTabComponent,
+            useExisting: HostRef,
         },
     ],
     host: {
@@ -48,11 +41,14 @@ export class EditorTabComponent implements OptionLike {
     @HostBinding("class.is-hover")
     public hover = false
 
-    @Output()
-    public pressed = new EventEmitter<PressedEvent>()
+    public innerHTML = ""
 
     @Output()
-    public select = new EventEmitter<void>()
+    public press = new HostEmitter<PressEvent>()
+
+    // tslint:disable-next-line:no-output-native
+    @Output()
+    public select = new HostEmitter()
 
     constructor(connect: Connect) {
         connect(this)

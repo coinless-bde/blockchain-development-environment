@@ -1,28 +1,23 @@
-import {
-    ChangeDetectionStrategy,
-    Component,
-    EventEmitter,
-    HostBinding,
-    Input,
-    Output,
-} from "@angular/core"
-import { Connect, Effects, effects } from "ng-effects"
-import { OptionLike } from "../cdk/interfaces"
-import { Button, PressedEvent } from "../cdk/button"
+import { ChangeDetectionStrategy, Component, HostBinding, Input, Output } from "@angular/core"
+import { Connect, Effects, HostEmitter, HostRef } from "ng-effects"
+import { OptionLike, PressEvent } from "../cdk/interfaces"
+import { Button } from "../cdk/button"
 import { Option } from "../cdk/option"
 
 @Component({
-    selector: "bde-option, [bdeOption]",
+    selector: "bde-option",
     template: `
         <ng-content></ng-content>
     `,
     styleUrls: ["./option.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
-        Effects, Option, Button,
+        Effects,
+        Option,
+        Button,
         {
             provide: OptionLike,
-            useExisting: OptionComponent,
+            useExisting: HostRef,
         },
     ],
     host: {
@@ -30,19 +25,19 @@ import { Option } from "../cdk/option"
     },
 })
 export class OptionComponent<T> implements OptionLike<T> {
+    @Input()
+    public value?: T
+
     @HostBinding("class.is-selected")
     @Input()
     public selected: boolean
 
     @Input()
-    public value?: T
+    @HostBinding("class.is-disabled")
+    public disabled: boolean
 
     @HostBinding("class.is-active")
     public active: boolean
-
-    @Input()
-    @HostBinding("class.is-disabled")
-    public disabled: boolean
 
     @HostBinding("class.is-focus")
     public focus: boolean
@@ -50,12 +45,10 @@ export class OptionComponent<T> implements OptionLike<T> {
     @HostBinding("class.is-hover")
     public hover: boolean
 
-    @Output()
-    public readonly pressed: EventEmitter<PressedEvent>
+    public innerHTML: string
 
-    // tslint:disable-next-line:no-output-native
     @Output()
-    public readonly select: EventEmitter<T>
+    public readonly press: HostEmitter<PressEvent>
 
     constructor(connect: Connect) {
         this.selected = false
@@ -64,8 +57,9 @@ export class OptionComponent<T> implements OptionLike<T> {
         this.focus = false
         this.hover = false
         this.value = undefined
-        this.select = new EventEmitter()
-        this.pressed = new EventEmitter()
+        this.press = new HostEmitter<PressEvent>()
+        this.innerHTML = ""
+
         connect(this)
     }
 }

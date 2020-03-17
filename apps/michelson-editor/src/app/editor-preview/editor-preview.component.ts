@@ -8,14 +8,14 @@ import { from } from "rxjs"
 @Component({
     selector: "bde-editor-preview",
     template: `
-<div [innerHTML]="content" > </div>
-`,
+        <div [innerHTML]="content"></div>
+    `,
     styleUrls: ["./editor-preview.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [Effects],
 })
 export class EditorPreviewComponent {
-    public content: string;
+    public content: string
 
     constructor(connect: Connect) {
         Monaco.languages.register({
@@ -33,6 +33,6 @@ export class EditorPreviewComponent {
 
     @Effect("content")
     setContent(state: State<EditorPreviewComponent>) {
-        return from(editor.colorize(this.content, "michelson", {tabSize: 4}))
+        return from(editor.colorize(this.content, "michelson", { tabSize: 4 }))
     }
 }

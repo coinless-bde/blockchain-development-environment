@@ -1,0 +1,33 @@
+:host {
+    display: flex;
+    align-items: center;
+    height: 35px;
+    position: relative;
+    padding: 0 12px 4px;
+    color: var(--color-base-03);
+    font: var(--font-heading-2);
+    opacity: 0.6;
+    transition: opacity 0.3s;
+    cursor: pointer;
+}
+
+:host:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right:  0;
+    bottom: 4px;
+}
+
+:host.is-disabled {
+    cursor: not-allowed;
+}
+
+:host.is-selected,
+:host.is-hover {
+    opacity: 1;
+}
+
+:host.is-selected:before {
+    border-top: 1px solid currentColor;
+}

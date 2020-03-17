@@ -1,6 +1,6 @@
 import { Event } from "../../store/interfaces"
 import { Type } from "@angular/core"
-import { MonoTypeOperatorFunction, of, OperatorFunction } from "rxjs"
+import { of, OperatorFunction } from "rxjs"
 import { catchError, map } from "rxjs/operators"
 import { Payload } from "../../store/store"
 import { README } from "../editor-content/default-documents/readme"

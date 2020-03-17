@@ -1,21 +1,18 @@
 import { ChangeDetectionStrategy, Component, Renderer2, ViewChild } from "@angular/core"
-import { Connect, Context, Effect, Effects, HostEmitter, State } from "ng-effects"
-import { README } from "./default-documents/readme"
-import { EXAMPLE } from "./default-documents/example"
+import { Connect, Effects, HostEmitter, State } from "ng-effects"
 import { MonacoEditorComponent } from "@coinless/vs-components"
 import { AppState, EditorState } from "../editor-state/state"
-import { Dispatch, Select, select, Store } from "../../store/store"
-import { debounceTime, filter, map, retry, take, tap, withLatestFrom } from "rxjs/operators"
+import { Dispatch, Select, Store } from "../../store/store"
+import { debounceTime, filter, map, retry, tap, withLatestFrom } from "rxjs/operators"
 import { EditorService } from "../editor/editor.service"
 import { combineLatest, fromEventPattern, Subject } from "rxjs"
-import { ActivatedRoute } from "@angular/router"
 import { AutoSaveFile, SaveFile, UpdateActiveEditor } from "../editor-state/commands"
 import { isTruthy } from "../utils"
 
 @Component({
     selector: "bde-editor-content",
     template: `
-        <bde-editor-tabs [(selected)]="selected">
+        <bde-editor-tabs [(value)]="selected">
             <bde-editor-tab class="tab" *ngFor="let tab of tabs; let index = index" [value]="index">
                 <bde-codicon icon="list-selection"></bde-codicon>
                 <span>{{ tab.title }}</span>
@@ -58,7 +55,7 @@ export class EditorContentComponent {
         private renderer: Renderer2,
     ) {
         this.tabs = []
-        this.selected = 1
+        this.selected = 2
         this.editorState = this.tabs[this.selected]
         this.saveAction = new Subject()
         this.autoSave = new Subject()
@@ -111,16 +108,5 @@ export class EditorContentComponent {
             filter(editorState => !editorState.readonly),
             retry(),
         )
-    }
-
-    @Effect()
-    public resize() {
-        this.store.subscribe(() => {
-            setTimeout(() => {
-                if (this.monaco && this.monaco.instance) {
-                    this.monaco.instance.layout()
-                }
-            })
-        })
     }
 }

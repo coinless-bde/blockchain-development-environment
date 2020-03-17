@@ -1,0 +1,7 @@
+.bdeMonacoEditor {
+    position: relative;
+}
+
+.bdeMonacoEditor > div {
+    position: absolute;
+}

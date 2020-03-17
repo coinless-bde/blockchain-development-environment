@@ -1,6 +1,6 @@
-import { root_completions, keyword_completions, type_completions } from "./completions"
-import * as Monaco from 'monaco-editor';
-import { editor } from 'monaco-editor';
+import { keyword_completions, root_completions, type_completions } from "./completions"
+import * as Monaco from "monaco-editor"
+import { editor } from "monaco-editor"
 
 const macros = "keyword"
 

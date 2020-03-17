@@ -1,13 +1,7 @@
-import {
-    ChangeDetectionStrategy,
-    Component,
-    EventEmitter,
-    HostBinding,
-    Input,
-    Output,
-} from "@angular/core"
-import { Connect, Effects, effects } from "ng-effects"
-import { Button, ButtonLike, PressedEvent } from "../cdk/button"
+import { ChangeDetectionStrategy, Component, HostBinding, Input, Output } from "@angular/core"
+import { Connect, Effects, HostEmitter } from "ng-effects"
+import { Button } from "../cdk/button"
+import { ButtonLike, PressEvent } from "../cdk/interfaces"
 
 @Component({
     selector: "bde-button, [bde-button], [bde-flush-button]",
@@ -37,7 +31,7 @@ export class ButtonComponent implements ButtonLike {
     public focus: boolean
 
     @Output()
-    public readonly pressed: EventEmitter<PressedEvent>
+    public readonly press: HostEmitter<PressEvent>
 
     constructor(connect: Connect) {
         this.disabled = false
@@ -45,7 +39,7 @@ export class ButtonComponent implements ButtonLike {
         this.focus = false
         this.active = false
         this.color = "none"
-        this.pressed = new EventEmitter()
+        this.press = new HostEmitter()
         connect(this)
     }
 }

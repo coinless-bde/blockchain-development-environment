@@ -1,7 +1,7 @@
 import { ElementRef, Injectable, OnDestroy, Renderer2, ViewContainerRef } from "@angular/core"
 import { Effect, State } from "ng-effects"
 import { DropdownLike } from "./interfaces"
-import { filter, map, mapTo, switchMapTo, tap } from "rxjs/operators"
+import { filter, map, mapTo, switchMapTo } from "rxjs/operators"
 import { fromEvents, query } from "../utils"
 import { TemplatePortal } from "@angular/cdk/portal"
 import { Overlay, OverlayRef } from "@angular/cdk/overlay"

@@ -2,19 +2,25 @@ import {
     ChangeDetectionStrategy,
     Component,
     ElementRef,
-    EventEmitter, Inject,
+    EventEmitter,
+    Inject,
     Input,
     Output,
+    ViewEncapsulation,
 } from "@angular/core"
-import { Connect, Context, Effect, Effects, State } from "ng-effects"
-import * as Monaco from "monaco-editor"
+import { Connect, Context, Effect, Effects, Observe, State } from "ng-effects"
 import { editor } from "monaco-editor"
 import { combineLatest, fromEventPattern, Observable } from "rxjs"
-import { MICHELSON_TOKENS_PROVIDER, MICHELSON_COMPLETION_PROVIDER, MICHELSON_HOVER_PROVIDER, MICHELSON_ONTYPE_PROVIDER } from "./michelson-language-definition"
+import {
+    MICHELSON_COMPLETION_PROVIDER,
+    MICHELSON_HOVER_PROVIDER,
+    MICHELSON_ONTYPE_PROVIDER,
+    MICHELSON_TOKENS_PROVIDER,
+} from "./michelson-language-definition"
 import { isDefined } from "../utils"
-import { filter, map, switchMap } from "rxjs/operators"
+import { filter, map, switchMap, throttleTime } from "rxjs/operators"
+import { IMonaco, MONACO } from "./monaco-editor.service"
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor
-import { IMonaco, MONACO, MonacoEditorService } from "./monaco-editor.service"
 
 interface Window {
     require: any
@@ -27,7 +33,11 @@ declare var window: Window
     template: ``,
     styleUrls: ["./monaco-editor.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None,
     providers: [Effects],
+    host: {
+        class: "bdeMonacoEditor"
+    }
 })
 export class MonacoEditorComponent {
     @Input()
@@ -128,6 +138,17 @@ export class MonacoEditorComponent {
             tabCompletion: "on",
             formatOnType: true,
             acceptSuggestionOnCommitCharacter: true,
+        })
+    }
+
+    @Effect()
+    resize(@Observe() observer: Observable<any>) {
+        return observer.pipe(
+            throttleTime(0)
+        ).subscribe(() => {
+            if (this.instance) {
+                this.instance.layout()
+            }
         })
     }
 }

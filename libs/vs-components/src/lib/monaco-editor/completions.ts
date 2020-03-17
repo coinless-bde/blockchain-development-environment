@@ -1,4 +1,4 @@
-import { languages } from 'monaco-editor';
+import { languages } from "monaco-editor"
 
 export const type_completions = [{
     label: "int",

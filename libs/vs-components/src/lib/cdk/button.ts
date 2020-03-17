@@ -1,7 +1,8 @@
 import { ElementRef, Injectable, Renderer2 } from "@angular/core"
 import { Context, Effect, State } from "ng-effects"
-import { merge, Subject } from "rxjs"
+import { merge } from "rxjs"
 import { disable, EventMap, fromEvents, toggle } from "../utils"
+import { ButtonLike } from "./interfaces"
 
 enum ButtonEvents {
     "click",
@@ -16,17 +17,6 @@ enum ButtonEvents {
     "keyup.enter" = "keyup",
     "keyup.space" = "keyup",
 }
-
-export interface ButtonLike {
-    hover: boolean
-    focus: boolean
-    active: boolean
-    disabled: boolean
-    pressed: Subject<PressedEvent>
-}
-
-export type PressedEvent = MouseEvent | KeyboardEvent
-
 @Injectable()
 export class Button {
     private readonly events: EventMap<typeof ButtonEvents>
@@ -78,7 +68,7 @@ export class Button {
         return pressed.subscribe(event => {
             event.preventDefault()
             if (!context.disabled) {
-                context.pressed.next(event)
+                context.press.next(event)
             }
         })
     }

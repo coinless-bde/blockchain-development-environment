@@ -1,44 +1,68 @@
-import { Injectable, QueryList } from "@angular/core"
-import { changes, Context, Effect, State } from "ng-effects"
-import { map, mapTo, mergeAll, switchMap, tap } from "rxjs/operators"
+import { Injectable } from "@angular/core"
+import { changes, Effect, State } from "ng-effects"
+import { every, filter, map, mapTo, mergeAll, mergeMap, repeat, take, withLatestFrom } from "rxjs/operators"
 import { queryList } from "../utils"
-import { OptionLike, SelectLike } from "./interfaces"
-import { Observable } from "rxjs"
-import { ButtonLike } from "../../index"
-
-export function optionSelected<T>(
-    source: Observable<QueryList<OptionLike<T>> | undefined>,
-): Observable<T> {
-    return queryList(source).pipe(
-        switchMap(options => options.map(option => option.select)),
-        mergeAll(),
-    )
-}
+import { SelectLike } from "./interfaces"
+import { combineLatest, merge, Observable } from "rxjs"
 
 @Injectable()
 export class Select {
-    constructor() {}
-
-    @Effect("selected", { whenRendered: true })
-    public selectOption(state: State<SelectLike>) {
-        return optionSelected(state.options)
+    @Effect("value")
+    public optionSelected(state: State<SelectLike>) {
+        return queryList(state.options).pipe(
+            mergeAll(),
+            mergeMap(option =>
+                option.state.press.pipe(
+                    withLatestFrom(option.state.value, (event, value) => value),
+                ),
+            ),
+        )
     }
 
-    @Effect({ whenRendered: true })
-    public selectedChange(state: State<SelectLike>, context: Context<SelectLike>) {
-        return changes(state.selected).subscribe(context.selectedChange)
+    @Effect("value")
+    public optionChanges(state: State<SelectLike>) {
+        return queryList(state.options).pipe(
+            changes(),
+            take(1),
+            mergeAll(),
+            mergeMap(option => option.state.selected),
+            map(selected => selected === false),
+            every(Boolean),
+            mapTo(undefined),
+            repeat(),
+        )
+    }
+
+    @Effect("valueChange")
+    public valueChanges(state: State<SelectLike>) {
+        return changes(state.value)
     }
 
     @Effect("expanded")
     public toggleExpanded(state: State<SelectLike>) {
-        return optionSelected(state.options).pipe(mapTo(false))
+        const toggleExpanded = state.press.pipe(
+            withLatestFrom(state.expanded, (event, expanded) => !expanded),
+        )
+
+        return merge(toggleExpanded, this.optionSelected(state).pipe(mapTo(false)))
     }
 
-    @Effect("expanded")
-    public buttonToggle(
-        state: State<ButtonLike & SelectLike>,
-        context: Context<ButtonLike & SelectLike>,
-    ) {
-        return context.pressed.pipe(map(() => !context.expanded))
+    @Effect("label", { detectChanges: true })
+    public setLabel(state: State<SelectLike>): Observable<string | undefined> {
+        const selectedLabel = queryList(state.options).pipe(
+            mergeAll(),
+            mergeMap(option =>
+                combineLatest(option.state.selected, option.state.innerHTML).pipe(
+                    map(([selected, innerHTML]) => (selected ? innerHTML : undefined)),
+                    filter(value => value !== undefined),
+                ),
+            ),
+        )
+        const placeholderLabel = combineLatest(state.value, state.placeholder).pipe(
+            map(([value, placeholder]) => (value === undefined ? placeholder : undefined)),
+            filter(value => value !== undefined),
+        )
+
+        return merge(selectedLabel, placeholderLabel)
     }
 }

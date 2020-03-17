@@ -1,13 +1,4 @@
-import {
-    BehaviorSubject,
-    merge,
-    Observable,
-    OperatorFunction,
-    queueScheduler,
-    scheduled,
-    Subject,
-    Subscription,
-} from "rxjs"
+import { BehaviorSubject, merge, Observable, OperatorFunction, queueScheduler, scheduled, Subscription } from "rxjs"
 import {
     EventEmitter,
     Inject,
@@ -19,17 +10,7 @@ import {
     OnDestroy,
     Type,
 } from "@angular/core"
-import {
-    distinctUntilChanged,
-    filter,
-    map,
-    pairwise,
-    scan,
-    share,
-    shareReplay,
-    startWith,
-    withLatestFrom,
-} from "rxjs/operators"
+import { distinctUntilChanged, filter, map, pairwise, scan, withLatestFrom } from "rxjs/operators"
 import { Effect, EffectAdapter, EffectMetadata } from "ng-effects"
 import { Command as CommandType, Event as EventType } from "./interfaces"
 import { diff } from "./devtools"

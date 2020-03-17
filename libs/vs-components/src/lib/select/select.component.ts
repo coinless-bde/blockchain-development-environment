@@ -1,9 +1,8 @@
 import {
     ChangeDetectionStrategy,
     Component,
-    ContentChild,
     ContentChildren,
-    EventEmitter,
+    ElementRef,
     HostBinding,
     Input,
     Output,
@@ -11,56 +10,47 @@ import {
     TemplateRef,
     ViewChild,
 } from "@angular/core"
-import { Connect, Effects, effects } from "ng-effects"
-import { Select } from "../cdk/select"
-import { DropdownLike, OptionLike, SelectLike } from "../cdk/interfaces"
+import { Connect, Effect, Effects, HostEmitter, HostRef, Observe } from "ng-effects"
+import { OptionLike, SelectLike } from "../cdk/interfaces"
 import { Button } from "../cdk/button"
+import { Select } from "../cdk/select"
 import { Dropdown } from "../cdk/dropdown"
+import { Observable } from "rxjs"
+import { distinctUntilChanged, map } from "rxjs/operators"
 
 @Component({
     selector: "bde-select",
     template: `
-        <ng-template>
-            <div class="options">
-                <ng-content select="bde-option, [bdeOption]"></ng-content>
-            </div>
-        </ng-template>
-
-        <ng-template #labelRef>
-            <ng-container
-                *ngTemplateOutlet="label; context: { $implicit: selected }"
-            ></ng-container>
-        </ng-template>
-
-        <ng-template #placeholderRef>
-            <bde-option>{{ placeholder }}</bde-option>
-        </ng-template>
-
-        <ng-container
-            *ngIf="selected === undefined; then placeholderRef; else labelRef"
-        ></ng-container>
+        <bde-select-label [innerHTML]="label"></bde-select-label>
 
         <bde-codicon
             class="chevron"
             [icon]="expanded ? 'chevron-up' : 'chevron-down'"
         ></bde-codicon>
+
+        <div class="options" *templateRef [style.width.px]="width">
+            <ng-content select="bde-option, bdeOption]"></ng-content>
+        </div>
     `,
     styleUrls: ["./select.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
-        Effects, Select, Button, Dropdown,
+        Effects,
+        Select,
+        Button,
+        Dropdown,
         {
             provide: SelectLike,
-            useExisting: SelectComponent,
+            useExisting: HostRef,
         },
     ],
     host: {
         tabindex: "0",
     },
 })
-export class SelectComponent<T> implements SelectLike<T>, DropdownLike {
+export class SelectComponent<T> implements SelectLike<T> {
     @Input()
-    public selected?: T
+    public value?: T
 
     @Input()
     public placeholder: string
@@ -82,33 +72,43 @@ export class SelectComponent<T> implements SelectLike<T>, DropdownLike {
     public hover: boolean
 
     @ContentChildren(OptionLike)
-    public options?: QueryList<OptionLike<T>>
+    public options?: QueryList<HostRef<OptionLike<T>>>
 
     @ViewChild(TemplateRef)
     public template?: TemplateRef<void>
 
-    @ContentChild(TemplateRef)
-    public label?: TemplateRef<any>
+    public label?: string
+
+    public width: number
 
     @Output()
-    public readonly selectedChange: EventEmitter<T>
+    public readonly valueChange: HostEmitter<T>
 
     @Output()
-    public readonly pressed: EventEmitter<any>
+    public readonly press: HostEmitter<any>
 
-    constructor(connect: Connect) {
+    @Effect("width")
+    setWidth(@Observe() observer: Observable<SelectComponent<any>>) {
+        return observer.pipe(
+            map(() => this.elementRef.nativeElement.offsetWidth),
+            distinctUntilChanged()
+        )
+    }
+
+    constructor(connect: Connect, public elementRef: ElementRef<HTMLElement>) {
         this.disabled = false
         this.expanded = false
         this.options = undefined
-        this.selected = undefined
+        this.value = undefined
         this.template = undefined
         this.label = undefined
         this.active = false
         this.focus = false
         this.hover = false
-        this.placeholder = "select"
-        this.selectedChange = new EventEmitter()
-        this.pressed = new EventEmitter()
+        this.width = 0
+        this.placeholder = "Select"
+        this.valueChange = new HostEmitter(true)
+        this.press = new HostEmitter(true)
 
         connect(this)
     }

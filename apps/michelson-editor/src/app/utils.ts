@@ -1,5 +1,4 @@
 import { filter } from "rxjs/operators"
-import { OperatorFunction } from "rxjs"
 
 export type Falsy = "" | false | 0 | 0n | null | undefined
 

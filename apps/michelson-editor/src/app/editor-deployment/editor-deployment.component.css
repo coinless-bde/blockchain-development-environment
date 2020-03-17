@@ -1,0 +1,107 @@
+:host {
+    display: block;
+    overflow-y: scroll;
+    flex: 1;
+    scrollbar-width: 14px;
+    scrollbar-color: var(--color-base-14) rgba(0, 0, 0, 0);
+}
+
+:host::-webkit-scrollbar {
+    width: 14px;  /* for vertical scrollbars */
+    height: 14px; /* for horizontal scrollbars */
+    border-left: 1px solid var(--color-base-19);
+}
+
+:host::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0);
+}
+
+:host::-webkit-scrollbar-thumb {
+    background: var(--color-base-14);
+}
+
+.deployment {
+    padding: 20px 40px;
+}
+
+.heading {
+    font: var(--font-heading-1);
+    color: var(--color-base-03);
+}
+
+.summary {
+    display: grid;
+    margin: 16px 0;
+    grid-auto-flow: dense;
+    grid-template-columns: repeat( auto-fit, minmax(250px, 1fr) );
+    grid-column-gap: 90px;
+    grid-row-gap: 16px;
+}
+
+.summaryItem {
+    display: flex;
+    font: var(--font-heading-2);
+}
+
+.summaryLabel {
+    flex: 1;
+    margin-right: 20px;
+    color: var(--color-base-09);
+}
+
+.summaryValue {
+    flex: 1;
+    margin-left: 20px;
+    color: var(--color-base-03);
+}
+
+.summaryValue.green {
+    color: var(--color-seti-green);
+}
+
+.section {
+    padding: 0 40px;
+    font: var(--font-body-1);
+}
+
+.settings {
+    display: flex;
+    padding: 24px 0 80px;
+    flex: 1;
+}
+
+.settingsList {
+    display: flex;
+    min-width: 192px;
+}
+
+.settingsContent {
+    flex: 1;
+}
+
+.settingsContent > h3 {
+    margin-bottom: -16px;
+    font: var(--font-heading-1);
+}
+
+.settingsContent > h3:not(:first-child) {
+    margin-top: 40px;
+}
+
+.formField:not(:first-child) {
+    margin-top: 32px;
+}
+
+.formField > p {
+    margin-bottom: 4px;
+}
+
+.formFieldMonacoEditor {
+    width: 100%;
+    height: 320px;
+    border: 1px solid var(--color-base-19);
+}
+
+.formField .tzSuffix {
+    margin: 0 8px;
+}

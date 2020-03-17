@@ -13,16 +13,23 @@ import { EditorTerminalComponent } from "./editor-terminal/editor-terminal.compo
 import {
     ButtonModule,
     CodiconModule,
-    MonacoEditorModule, MonacoEditorService,
+    FormFieldModule,
+    InputModule,
+    MonacoEditorModule,
+    MonacoEditorService,
     SelectModule,
+    TabsModule,
 } from "@coinless/vs-components"
 import { EditorTabsComponent } from "./editor-tabs/editor-tabs.component"
 import { EditorTabComponent } from "./editor-tabs/editor-tab/editor-tab.component"
 import { HttpClientModule } from "@angular/common/http"
 import { StoreModule } from "../store/store"
 import * as reducers from "./editor-state/reducers"
-import { initialState } from "./editor-state/state";
-import { EditorDeploymentComponent } from './editor-deployment/editor-deployment.component'
+import { initialState } from "./editor-state/state"
+import { EditorDeploymentComponent } from "./editor-deployment/editor-deployment.component"
+import { ReactiveFormsModule } from "@angular/forms"
+import { TreeModule } from "../../../../libs/vs-components/src/lib/tree/tree.module"
+import { LabelModule } from "../../../../libs/vs-components/src/lib/label/label.module"
 
 export function loadMonaco() {
     return () => new Promise(resolve => MonacoEditorService.loadMonaco(resolve))
@@ -73,6 +80,12 @@ export function loadMonaco() {
         MonacoEditorModule,
         HttpClientModule,
         StoreModule.config(reducers, initialState),
+        TabsModule,
+        InputModule,
+        FormFieldModule,
+        ReactiveFormsModule,
+        TreeModule,
+        LabelModule,
     ],
     providers: [
         {

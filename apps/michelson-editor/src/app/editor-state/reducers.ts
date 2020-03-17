@@ -1,7 +1,7 @@
 import { EditorState, PanesState } from "./state"
 import { FileLoaded, FileSaved } from "./events"
 import { Actions } from "./types"
-import { AutoSaveFile, UpdateActiveEditor, TogglePreview } from "./commands"
+import { AutoSaveFile, TogglePreview, UpdateActiveEditor } from "./commands"
 
 export function activeEditor(state: EditorState, action: Actions): Partial<EditorState> {
     switch(action.type) {

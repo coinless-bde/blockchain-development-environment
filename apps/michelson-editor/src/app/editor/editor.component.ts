@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, HostBinding } from "@angular/core"
 import { Editor, EditorLike } from "./editor"
-import { Connect, Effects, effects } from "ng-effects"
+import { Connect, Effects } from "ng-effects"
 
 @Component({
     selector: "bde-editor",

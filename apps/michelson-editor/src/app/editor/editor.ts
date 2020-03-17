@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core"
-import { Context, Effect, State } from "ng-effects"
+import { Effect, State } from "ng-effects"
 import { AppState, mapToErrorEvent, mapToEvent } from "../editor-state/state"
 import { Action, Dispatch, Events, ofType, select, Store } from "../../store/store"
 import { AutoSaveFile, DeploySmartContract, LoadFile, SaveFile, UpdateActiveEditor } from "../editor-state/commands"
 import { NEVER, Observable } from "rxjs"
 import { EditorService } from "./editor.service"
-import { catchError, filter, ignoreElements, map, mergeMap, switchMap, take, tap, withLatestFrom } from "rxjs/operators"
+import { catchError, ignoreElements, map, mergeMap, switchMap, tap, withLatestFrom } from "rxjs/operators"
 import {
     FileAutoSaved,
     FileAutoSaveError,

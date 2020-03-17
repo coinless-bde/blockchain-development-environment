@@ -21,26 +21,20 @@ import { ActivatedRoute } from "@angular/router"
                 (input)="projectName = $any($event).target.value.trim()"
                 #input
             />
-
-            <div class="documentDeploy">
-                <button bde-button color="primary" class="deployButton" (pressed)="deploy.next(id)">
-                    Deploy
-                </button>
-            </div>
         </div>
 
         <div class="network">
             <bde-select
                 class="networkSelect"
                 placeholder="Select network"
-                [(selected)]="selectedNetwork"
+                [(value)]="selectedNetwork"
             >
                 <bde-select-label>{{ selectedNetwork }}</bde-select-label>
                 <bde-option
                     *ngFor="let option of networkOptions"
                     [value]="option"
                     [disabled]="option.disabled"
-                    >{{ option.label }}</bde-option
+                >{{ option.label }}</bde-option
                 >
             </bde-select>
 
@@ -54,14 +48,14 @@ import { ActivatedRoute } from "@angular/router"
 
         <div class="settings">
             <button bde-button class="settingsProfile">
-                <img src="https://api.adorable.io/avatars/48/{{ username }}.png" alt="" />
+                <img src="https://api.adorable.io/avatars/48/{{ username }}.png" alt=""/>
                 <span>{{ username }}</span>
             </button>
             <button
                 bde-button
                 color="secondary"
                 class="settingsPreviewToggle"
-                (pressed)="splitPane = !splitPane"
+                (press)="splitPane = !splitPane"
             >
                 <bde-codicon icon="symbol-boolean"></bde-codicon>
                 <span>{{ splitPane ? "Close" : "Open" }}</span>

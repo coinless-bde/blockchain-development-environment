@@ -1,0 +1,60 @@
+.bdeFormField {
+    display: grid;
+    position: relative;
+    grid-template-areas:
+        ". label label"
+        ". hint hint"
+        "prefix input suffix"
+        ". error error";
+    grid-template-columns: 0 auto 0;
+    grid-row-gap: 8px;
+    align-items: center;
+    font: var(--font-body-1);
+    color: var(--color-base-07);
+}
+
+.bdeFormField > * {
+    grid-area: hint
+}
+
+.bdeFormField.is-prefixed,
+.bdeFormField.is-suffixed {
+    grid-template-columns: max-content min-content max-content;
+}
+
+.bdeFormField > bde-label {
+    grid-area: label;
+    color: var(--color-base-03);
+}
+
+.bdeFormField > bde-error {
+    grid-area: error
+}
+
+.bdeFormField > input,
+.bdeFormField > textarea,
+.bdeFormField > bde-monaco-editor,
+.bdeFormField > bde-select {
+    grid-area: input;
+}
+
+.bdeFormField > input {
+    height: 26px;
+    padding: 4px;
+    background: var(--color-base-14);
+    color: var(--color-base-06);
+    font: var(--font-body-1);
+}
+
+.bdeFormField > input.is-placeholder {
+    color: var(--color-base-13);
+}
+
+.bdeFormField > input.is-active,
+.bdeFormField > input.is-focus {
+    border-color: var(--color-blue-07);
+}
+
+.bdeFormField > input.ng-invalid.ng-touched {
+    border-color: var(--color-red-04);
+}

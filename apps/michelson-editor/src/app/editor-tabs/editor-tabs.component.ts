@@ -1,13 +1,6 @@
-import {
-    ChangeDetectionStrategy,
-    Component,
-    ContentChildren,
-    EventEmitter,
-    Input,
-    Output,
-} from "@angular/core"
-import { OptionLike, PressedEvent, Select, SelectLike } from "@coinless/vs-components"
-import { Connect, Effects, effects } from "ng-effects"
+import { ChangeDetectionStrategy, Component, ContentChildren, Input, Output } from "@angular/core"
+import { OptionLike, PressEvent, Select, SelectLike } from "@coinless/vs-components"
+import { Connect, Effects, HostEmitter, HostRef } from "ng-effects"
 
 @Component({
     selector: "bde-editor-tabs",
@@ -23,7 +16,7 @@ import { Connect, Effects, effects } from "ng-effects"
         Effects, Select,
         {
             provide: SelectLike,
-            useExisting: EditorTabsComponent,
+            useExisting: HostRef,
         },
     ],
 })
@@ -32,9 +25,11 @@ export class EditorTabsComponent implements SelectLike {
     public focus = false
     public hover = false
     public expanded = false
+    public placeholder = undefined
+    public label = ""
 
     @Input()
-    public selected = undefined
+    public value = undefined
 
     @Input()
     public disabled = false
@@ -43,10 +38,10 @@ export class EditorTabsComponent implements SelectLike {
     public options = undefined
 
     @Output()
-    public selectedChange = new EventEmitter<any>()
+    public valueChange = new HostEmitter<any>()
 
     @Output()
-    public pressed = new EventEmitter<PressedEvent>()
+    public press = new HostEmitter<PressEvent>()
 
     constructor(connect: Connect) {
         connect(this)

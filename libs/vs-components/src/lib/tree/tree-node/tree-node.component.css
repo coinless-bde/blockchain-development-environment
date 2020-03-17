@@ -1,0 +1,4 @@
+:host {
+    font: var(--font-label-1);
+    color: var(--color-base-06);
+}

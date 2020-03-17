@@ -24,6 +24,7 @@
 }
 
 .tab {
+    display: flex;
     height: 32px;
     margin: 0 12px;
     font: var(--font-heading-5);
