@@ -1,19 +1,22 @@
 import { Injectable } from "@angular/core"
-import { changes, Context, Effect, HostEmitter, latest, State } from "ng-effects"
+import { changes, Effect, HostEmitter, latest, State } from "ng-effects"
 import { Commands, Dispatch, Select, Store } from "../../store/store"
-import { AppState } from "../editor-state/state"
+import { AppState, NetworkState } from "../editor-state/state"
 import { map, tap } from "rxjs/operators"
 import { EditorService } from "../editor/editor.service"
 import { combineLatest } from "rxjs"
 import { ActivatedRoute, Router } from "@angular/router"
-import { DeploySmartContract, TogglePreview } from "../editor-state/commands"
-import { isTruthy } from "../utils"
+import { ChangeNetwork, TogglePreview } from "../editor-state/commands"
+import { EditorDeploymentComponent } from "../editor-deployment/editor-deployment.component"
 
 export interface EditorMenubarLike {
     splitPane: boolean
     deploy: HostEmitter<number | null>
     projectName: string
     username: string
+    networks: NetworkState[]
+    activeNetwork: number
+    changeActiveNetwork: HostEmitter<number>
 }
 
 @Injectable()
@@ -33,19 +36,20 @@ export class EditorMenubar {
         })
     }
 
+    @Dispatch(ChangeNetwork)
+    changeNetwork(state: State<EditorMenubarLike>) {
+        return state.changeActiveNetwork.pipe(
+            map(id => ({ id }))
+        )
+    }
+
     @Select()
     public splitPane(): Select<AppState, EditorMenubarLike> {
         return {
-            splitPane: state => state.panes.expanded
+            splitPane: state => state.panes.expanded,
+            networks: state => state.networks,
+            activeNetwork: state => state.activeNetwork
         }
-    }
-
-    @Dispatch(DeploySmartContract)
-    public deploy(state: State<EditorMenubarLike>, context: Context<EditorMenubarLike>) {
-        return context.deploy.pipe(
-            isTruthy(),
-            map(id => ({ id }))
-        )
     }
 
     @Effect()

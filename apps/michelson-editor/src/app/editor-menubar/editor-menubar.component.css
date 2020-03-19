@@ -45,17 +45,17 @@
     white-space: nowrap;
 }
 
-.network {
+.documentShare {
     display: flex;
     align-items: center;
     margin: 0 24px;
 }
 
-.networkAddress {
-    margin-left: 24px;
+.networkSelect {
+    width: 200px;
 }
 
-.networkAddress span {
+.documentShare span {
     padding-left: 4px;
 }
 

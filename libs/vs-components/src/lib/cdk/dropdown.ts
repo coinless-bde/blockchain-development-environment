@@ -41,12 +41,16 @@ export class Dropdown implements OnDestroy {
     public backdropClick(_: State<DropdownLike>) {
         const { element, injector } = this.viewContainer
         const events = fromEvents(
-            element.nativeElement,
-            { "keydown.esc": "keydown" },
             injector.get(Renderer2),
+            element.nativeElement,
+            {
+                esc: {
+                    keydown: KeyboardEvent,
+                },
+            },
         )
 
-        return merge(this.overlay.backdropClick(), events["keydown.esc"]).pipe(mapTo(false))
+        return merge(this.overlay.backdropClick(), events.esc.keydown).pipe(mapTo(false))
     }
 
     @Effect()

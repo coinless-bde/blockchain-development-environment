@@ -2,31 +2,21 @@ import {
     ChangeDetectionStrategy,
     Component,
     ElementRef,
-    EventEmitter,
     Inject,
     Input,
     Output,
     ViewEncapsulation,
 } from "@angular/core"
-import { Connect, Context, Effect, Effects, Observe, State } from "ng-effects"
+import { Connect, Context, Effect, Effects, HostEmitter, Observe, State } from "ng-effects"
 import { editor } from "monaco-editor"
 import { combineLatest, fromEventPattern, Observable } from "rxjs"
-import {
-    MICHELSON_COMPLETION_PROVIDER,
-    MICHELSON_HOVER_PROVIDER,
-    MICHELSON_ONTYPE_PROVIDER,
-    MICHELSON_TOKENS_PROVIDER,
-} from "./michelson-language-definition"
 import { isDefined } from "../utils"
 import { filter, map, switchMap, throttleTime } from "rxjs/operators"
 import { IMonaco, MONACO } from "./monaco-editor.service"
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor
-
-interface Window {
-    require: any
-}
-
-declare var window: Window
+import { FormFieldLike } from "../cdk/interfaces"
+import { FormField } from "../cdk/form-field"
+import { NG_VALUE_ACCESSOR } from "@angular/forms"
 
 @Component({
     selector: "bde-monaco-editor",
@@ -34,34 +24,52 @@ declare var window: Window
     styleUrls: ["./monaco-editor.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
-    providers: [Effects],
+    providers: [Effects, FormField, {
+        provide: NG_VALUE_ACCESSOR,
+        useExisting: MonacoEditorComponent,
+        multi: true
+    }],
     host: {
         class: "bdeMonacoEditor"
     }
 })
-export class MonacoEditorComponent {
+export class MonacoEditorComponent implements FormFieldLike {
     @Input()
-    public document: string
+    public value: string
+
+    @Input()
+    disabled: boolean
 
     @Input()
     public language: string
 
     @Output()
-    public valueChanges: EventEmitter<string>
+    public valueChange: HostEmitter<string>
 
     public instance?: IStandaloneCodeEditor
 
     public monaco: IMonaco
 
+    public registerOnChange: HostEmitter<(value: any) => any>
+    public registerOnTouched: HostEmitter<Function>
+    public setDisabledState: HostEmitter<boolean>
+    public writeValue: HostEmitter<any>
+
     private readonly nativeElement: HTMLElement
 
     constructor(elementRef: ElementRef, @Inject(MONACO) monaco: IMonaco, connect: Connect) {
         this.nativeElement = elementRef.nativeElement
-        this.valueChanges = new EventEmitter()
-        this.document = ""
+        this.valueChange = new HostEmitter(true)
+        this.value = ""
+        this.disabled = false
         this.language = "plaintext"
         this.instance = undefined
         this.monaco = monaco
+        this.registerOnChange = new HostEmitter()
+        this.registerOnTouched = new HostEmitter()
+        this.setDisabledState = new HostEmitter()
+        this.writeValue = new HostEmitter()
+
         connect(this)
     }
 
@@ -74,16 +82,15 @@ export class MonacoEditorComponent {
                     function listen(handler: (event: any) => void) {
                         instance.onDidChangeModelContent(handler)
                     }
-
                     return fromEventPattern(listen).pipe(map(() => instance.getValue()))
                 }),
             )
-            .subscribe(this.valueChanges)
+            .subscribe(this.valueChange)
     }
 
     @Effect()
     public loadDocument(state: State<MonacoEditorComponent>) {
-        return combineLatest(state.document, state.instance).subscribe(([document, instance]) => {
+        return combineLatest(state.value, state.instance).subscribe(([document, instance]) => {
             if (instance && document && document !== instance.getValue()) {
                 instance.setValue(document)
             }
@@ -109,25 +116,8 @@ export class MonacoEditorComponent {
 
     @Effect({ whenRendered: true })
     public mountEditor(@Context() context: MonacoEditorComponent) {
-        context.instance = this.createEditor(this.monaco)
-    }
-
-    private createEditor(monaco: any): IStandaloneCodeEditor {
-        const langId = "michelson"
-
-        monaco.languages.register({
-            id: langId,
-            aliases: ["tz"],
-        })
-
-        monaco.languages.registerCompletionItemProvider(langId, MICHELSON_COMPLETION_PROVIDER)
-        monaco.languages.setMonarchTokensProvider(langId, MICHELSON_TOKENS_PROVIDER)
-        monaco.languages.registerHoverProvider(langId, MICHELSON_HOVER_PROVIDER)
-        monaco.languages.registerOnTypeFormattingEditProvider(langId, MICHELSON_ONTYPE_PROVIDER)
-
-        return monaco.editor.create(this.nativeElement, {
+        context.instance = context.monaco.editor.create(this.nativeElement, {
             value: ``,
-            language: langId,
             theme: "vs-dark",
             automaticLayout: true,
             minimap: {

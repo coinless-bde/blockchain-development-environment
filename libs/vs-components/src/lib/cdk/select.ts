@@ -35,7 +35,7 @@ export class Select {
 
     @Effect("valueChange")
     public valueChanges(state: State<SelectLike>) {
-        return changes(state.value)
+        return this.optionSelected(state)
     }
 
     @Effect("expanded")

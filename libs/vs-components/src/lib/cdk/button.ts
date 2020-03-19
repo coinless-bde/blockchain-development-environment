@@ -1,31 +1,33 @@
 import { ElementRef, Injectable, Renderer2 } from "@angular/core"
-import { Context, Effect, State } from "ng-effects"
+import { Effect, State } from "ng-effects"
 import { merge } from "rxjs"
-import { disable, EventMap, fromEvents, toggle } from "../utils"
+import { EventMap, fromEvents, preventDefault, toggle } from "../utils"
 import { ButtonLike } from "./interfaces"
 
-enum ButtonEvents {
-    "click",
-    "pointerenter",
-    "pointerleave",
-    "pointerdown",
-    "pointerup",
-    "focus",
-    "blur",
-    "keydown.enter" = "keydown",
-    "keydown.space" = "keydown",
-    "keyup.enter" = "keyup",
-    "keyup.space" = "keyup",
+const buttonEvents = {
+    click: MouseEvent,
+    pointerenter: PointerEvent,
+    pointerleave: PointerEvent,
+    pointerdown: PointerEvent,
+    pointerup: PointerEvent,
+    focus: FocusEvent,
+    blur: FocusEvent,
+    keydown: {
+        enter: KeyboardEvent,
+        space: KeyboardEvent,
+    },
+    keyup: {
+        enter: KeyboardEvent,
+        space: KeyboardEvent,
+    },
 }
+
 @Injectable()
 export class Button {
-    private readonly events: EventMap<typeof ButtonEvents>
-    private readonly nativeElement: HTMLElement
+    private readonly events: EventMap<typeof buttonEvents>
 
     constructor(elementRef: ElementRef<HTMLElement>, renderer: Renderer2) {
-        const { nativeElement } = elementRef
-        this.events = fromEvents(nativeElement, ButtonEvents, renderer)
-        this.nativeElement = nativeElement
+        this.events = fromEvents(renderer, elementRef.nativeElement, buttonEvents)
     }
 
     @Effect("hover")
@@ -33,43 +35,41 @@ export class Button {
         const events = this.events
         const on = events.pointerenter
         const off = merge(events.pointerleave, events.blur)
+        const disable = state.disabled
 
-        return toggle(on, off).pipe(disable(state.disabled))
+        return toggle({ on, off, disable })
     }
 
     @Effect("focus")
-    public focus({  }: State<ButtonLike>) {
+    public focus(@State() state: State<ButtonLike>) {
         const events = this.events
         const on = events.focus
         const off = events.blur
 
-        return toggle(on, off)
+        return toggle({ on, off })
     }
 
     @Effect("active")
     public active(state: State<ButtonLike>) {
-        const events = this.events
-        const on = merge(events.pointerdown, events["keydown.enter"], events["keydown.space"])
-        const off = merge(
-            events.pointerup,
-            events.pointerleave,
-            events.blur,
-            events["keyup.enter"],
-            events["keyup.space"],
-        )
+        const {
+            pointerup,
+            pointerdown,
+            pointerleave,
+            blur,
+            keydown: { enter, space },
+        } = this.events
+        const on = merge(pointerdown, enter, space)
+        const off = merge(pointerup, pointerleave, blur, enter, space)
+        const disable = state.disabled
 
-        return toggle(on, off).pipe(disable(state.disabled))
+        return toggle({ on, off, disable })
     }
 
-    @Effect()
-    public click(@Context() context: Context<ButtonLike>) {
+    @Effect("press")
+    public click(@State() state: State<ButtonLike>) {
         const events = this.events
-        const pressed = merge(events.click, events["keydown.enter"], events["keydown.space"])
-        return pressed.subscribe(event => {
-            event.preventDefault()
-            if (!context.disabled) {
-                context.press.next(event)
-            }
-        })
+        return merge(events.click, events.keydown.enter, events.keydown.space).pipe(
+            preventDefault(),
+        )
     }
 }

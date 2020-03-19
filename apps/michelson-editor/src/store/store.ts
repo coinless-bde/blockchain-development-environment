@@ -185,9 +185,7 @@ export class Store<T extends {[key: string]: any}> extends Observable<T> impleme
             scheduled(this.dispatcher.pipe(
                 scan<Event, T>((state, action) =>
                     reducers.reduce((_state, [key, reducer]) => {
-                        const returnValue: any = reducer(_state[key], action)
-                        const seed = Array.isArray(returnValue) ? [] : {}
-                        _state[key] = returnValue !== _state[key] ? Object.assign(seed, _state[key], returnValue) : _state[key]
+                        _state[key] = reducer(_state[key], action)
                         return _state
                     }, state),
                     initialState

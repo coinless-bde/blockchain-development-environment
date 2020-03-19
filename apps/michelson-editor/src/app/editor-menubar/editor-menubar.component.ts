@@ -21,29 +21,28 @@ import { ActivatedRoute } from "@angular/router"
                 (input)="projectName = $any($event).target.value.trim()"
                 #input
             />
+
+            <div class="documentShare">
+                <button bde-button (press)="copyUrl()">
+                    <bde-codicon icon="files"></bde-codicon>
+                    <span>Share</span>
+                </button>
+            </div>
         </div>
 
         <div class="network">
             <bde-select
                 class="networkSelect"
                 placeholder="Select network"
-                [(value)]="selectedNetwork"
+                [value]="activeNetwork"
+                (valueChange)="changeActiveNetwork($event)"
             >
-                <bde-select-label>{{ selectedNetwork }}</bde-select-label>
                 <bde-option
-                    *ngFor="let option of networkOptions"
-                    [value]="option"
+                    *ngFor="let option of networks; let index = index"
+                    [value]="index"
                     [disabled]="option.disabled"
-                >{{ option.label }}</bde-option
-                >
+                >{{ option.label }}</bde-option>
             </bde-select>
-
-            <div class="networkAddress">
-                <button bde-button>
-                    <bde-codicon icon="files"></bde-codicon>
-                    <span>KT1GgUJwMQoFayRYNwamRAYCvHBLzgorLoGo</span>
-                </button>
-            </div>
         </div>
 
         <div class="settings">
@@ -69,41 +68,28 @@ import { ActivatedRoute } from "@angular/router"
 export class EditorMenubarComponent implements EditorMenubarLike {
     public splitPane: boolean
     public projectName: string
-    public networkOptions = [
-        {
-            label: "1: Mainnet (Coming soon)",
-            disabled: true,
-        },
-        {
-            label: "2: Babylon (deprecated)",
-            disabled: false,
-        },
-        {
-            label: "3: Carthage",
-            disabled: false,
-        },
-        {
-            label: "4: Zeronet (Coming soon)",
-            disabled: true,
-        },
-        {
-            label: "5: Sandbox (Coming soon)",
-            disabled: true,
-        },
-    ]
-    public selectedNetwork = this.networkOptions[2]
+    public networks: any[]
     public username: string
     public deploy: HostEmitter<number | null>
     public id: number | null
+    public activeNetwork = 0
+    public changeActiveNetwork: HostEmitter<number>
 
     constructor(connect: Connect, route: ActivatedRoute) {
         const { project, user, id } = route.snapshot.params
         this.username = user || "anonymous"
+        this.networks = []
         this.projectName = project || ""
         this.splitPane = true
         this.deploy = new HostEmitter()
+        this.changeActiveNetwork = new HostEmitter()
         this.id = id === undefined ? null : Number(id)
 
         connect(this)
+    }
+
+    copyUrl() {
+        navigator.clipboard.writeText(window.location.href)
+        window.alert("Share link added to clipboard.")
     }
 }

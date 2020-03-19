@@ -1,25 +1,8 @@
-import {
-    ChangeDetectionStrategy,
-    Component,
-    ContentChild,
-    HostBinding,
-    Injectable,
-    ViewEncapsulation,
-} from "@angular/core"
-import { Connect, Effects } from "ng-effects"
+import { ChangeDetectionStrategy, Component, ContentChild, HostBinding, ViewEncapsulation } from "@angular/core"
+import { Connect } from "ng-effects"
 import { NgControl } from "@angular/forms"
 import { PrefixDirective } from "./prefix.directive"
 import { SuffixDirective } from "./suffix.directive"
-
-@Injectable()
-export class FormField {
-    constructor() {
-    }
-}
-
-export interface FormFieldLike {
-    control?: NgControl
-}
 
 @Component({
     selector: "bde-form-field",
@@ -31,7 +14,7 @@ export interface FormFieldLike {
     `,
     styleUrls: ["./form-field.component.css"],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [Effects, FormField],
+    providers: [],
     encapsulation: ViewEncapsulation.None,
     host: {
         "class": "bdeFormField",
@@ -44,7 +27,7 @@ export interface FormFieldLike {
         "[class.ng-pending]": "control?.pending",
     },
 })
-export class FormFieldComponent implements FormFieldLike {
+export class FormFieldComponent {
     @ContentChild(NgControl)
     control?: NgControl
 
@@ -56,10 +39,9 @@ export class FormFieldComponent implements FormFieldLike {
     @HostBinding("class.is-suffixed")
     suffix?: SuffixDirective
 
-    constructor(connect: Connect) {
+    constructor() {
         this.prefix = undefined
         this.suffix = undefined
         this.control = undefined
-        connect(this)
     }
 }

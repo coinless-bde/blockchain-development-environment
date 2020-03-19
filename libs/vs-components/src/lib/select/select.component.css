@@ -40,6 +40,6 @@
     padding: 5px 0;
 }
 
-::ng-deep bde-select > bde-option {
-    pointer-events: none;
+.label {
+    flex: 1
 }

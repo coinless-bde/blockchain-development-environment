@@ -1,34 +1,42 @@
-import { combineLatest, fromEventPattern, merge, MonoTypeOperatorFunction, Observable } from "rxjs"
-import { filter, map, mapTo, startWith, switchMap } from "rxjs/operators"
-import { QueryList, Renderer2 } from "@angular/core"
+import { combineLatest, fromEventPattern, merge, MonoTypeOperatorFunction, Observable, of } from "rxjs"
+import { filter, map, mapTo, startWith, switchMap, tap, withLatestFrom } from "rxjs/operators"
+import { QueryList, Renderer2, Type } from "@angular/core"
 
-export type HTMLElementEventNames = keyof HTMLElementEventMap
-
-export type EventMap<T extends { [key: string]: any }> = {
-    [key in keyof T]: key extends HTMLElementEventNames
-        ? Observable<HTMLElementEventMap[key]>
-        : Observable<HTMLElementEventMap[T[key]]>
+export type EventMap<T extends any> = {
+    [key in keyof T]: T[key] extends Type<any> ? Observable<InstanceType<T[key]>> : EventMap<T[key]>
 }
 
-export function fromEvents<T extends { [key: string]: string | number }>(
-    element: HTMLElement,
-    eventMap: T,
-    renderer: Renderer2,
-): EventMap<T> {
+export function fromEvents<T extends { [key: number]: string | { [key: string]: { [key: number]: string } } }>(renderer: Renderer2, element: HTMLElement, eventMap: T): EventMap<T> {
     const observer: any = {}
-    return Object.keys(eventMap)
-        .filter(eventName => isNaN(Number(eventName)))
-        .reduce((acc, eventKey) => {
-            function addEvent(handler: (event: any) => boolean | void) {
-                return renderer.listen(element, eventKey, handler)
-            }
-            acc[eventKey] = fromEventPattern(addEvent)
-            return acc
-        }, observer)
+    return Object.keys(eventMap).reduce((acc, eventKey) => {
+        const value = eventMap[eventKey as any]
+
+        if (typeof value === "function") {
+            acc[eventKey] = fromEventPattern(handler => renderer.listen(element, eventKey, handler))
+        } else {
+            acc[eventKey] = fromEvents(renderer, element, value)
+        }
+
+        return acc
+    }, observer)
 }
 
-export function toggle(on: Observable<any>, off: Observable<any>) {
-    return merge(mapTo(true)(on), mapTo(false)(off))
+export interface ToggleOptions {
+    on: Observable<any>
+    off: Observable<any>
+    disable?: Observable<boolean>
+}
+
+export function toggle(options: ToggleOptions): Observable<boolean> {
+    return merge(mapTo(true)(options.on), mapTo(false)(options.off)).pipe(
+        withLatestFrom(options.disable || of(false), (toggled, disabled) =>
+            disabled ? false : toggled,
+        ),
+    )
+}
+
+export function preventDefault<T extends Event>(): MonoTypeOperatorFunction<T> {
+    return tap(event => event.preventDefault())
 }
 
 export function disable(notifier: Observable<any>): MonoTypeOperatorFunction<boolean> {

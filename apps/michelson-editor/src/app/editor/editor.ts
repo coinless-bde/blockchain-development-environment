@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { Effect, State } from "ng-effects"
-import { AppState, mapToErrorEvent, mapToEvent } from "../editor-state/state"
+import { AppState} from "../editor-state/state"
 import { Action, Dispatch, Events, ofType, select, Store } from "../../store/store"
 import { AutoSaveFile, DeploySmartContract, LoadFile, SaveFile, UpdateActiveEditor } from "../editor-state/commands"
 import { NEVER, Observable } from "rxjs"
@@ -12,10 +12,11 @@ import {
     FileLoaded,
     FileLoadError,
     FileSaved,
-    FileSaveError,
+    FileSaveError, SmartContractDeployed, SmartContractDeployError,
 } from "../editor-state/events"
 import { ActivatedRoute, Router } from "@angular/router"
 import { isTruthy } from "../utils"
+import { errorType, type } from "../editor-state/types"
 
 export interface EditorLike {
     splitPane: boolean
@@ -47,17 +48,10 @@ export class Editor {
         return command.pipe(
             switchMap((id) => {
                 return this.editor.deploy(id).pipe(
-                    catchError(error => {
-                        console.error(error)
-                        window.alert("Error in deployment, see console for details")
-                        return NEVER
-                    }),
-                    tap(() => {
-                        window.alert("Deployment succeeded!")
-                    }),
+                    type(SmartContractDeployed),
+                    errorType(SmartContractDeployError)
                 )
-            }),
-            ignoreElements()
+            })
         )
     }
 
@@ -66,8 +60,8 @@ export class Editor {
         return command.pipe(
             switchMap(editor => {
                 return this.editor.save(editor).pipe(
-                    mapToEvent(FileSaved),
-                    mapToErrorEvent(FileSaveError)
+                    type(FileSaved),
+                    errorType(FileSaveError)
                 )
             }),
         )
@@ -80,8 +74,8 @@ export class Editor {
                 const id = editorState.id
                 return typeof id === "number"
                     ? this.editor.autosave({ ...editorState, id }).pipe(
-                        mapToEvent(FileAutoSaved),
-                        mapToErrorEvent(FileAutoSaveError)
+                        type(FileAutoSaved),
+                        errorType(FileAutoSaveError)
                     )
                     : NEVER
             }),
@@ -116,8 +110,8 @@ export class Editor {
     public fetchFile(command: Observable<LoadFile>) {
         return command.pipe(
             mergeMap(({ id }) => this.editor.load(id).pipe(
-                mapToEvent(FileLoaded),
-                mapToErrorEvent(FileLoadError)
+                type(FileLoaded),
+                errorType(FileLoadError)
             ))
         )
     }

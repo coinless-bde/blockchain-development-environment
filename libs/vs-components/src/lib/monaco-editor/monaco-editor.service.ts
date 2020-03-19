@@ -1,5 +1,10 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core"
 import * as IMonaco from "monaco-editor"
+import {
+    MICHELSON_COMPLETION_PROVIDER,
+    MICHELSON_HOVER_PROVIDER, MICHELSON_ONTYPE_PROVIDER,
+    MICHELSON_TOKENS_PROVIDER,
+} from "./michelson-language-definition"
 
 interface Window {
     require: any
@@ -19,6 +24,20 @@ export const MONACO = new InjectionToken<typeof IMonaco>("MONACO", { providedIn:
     }
 }})
 
+function registerLanguages(monaco: IMonaco) {
+    const langId = "michelson"
+
+    monaco.languages.register({
+        id: langId,
+        aliases: ["tz"],
+    })
+
+    monaco.languages.registerCompletionItemProvider(langId, MICHELSON_COMPLETION_PROVIDER as any)
+    monaco.languages.setMonarchTokensProvider(langId, MICHELSON_TOKENS_PROVIDER as any)
+    monaco.languages.registerHoverProvider(langId, MICHELSON_HOVER_PROVIDER as any)
+    monaco.languages.registerOnTypeFormattingEditProvider(langId, MICHELSON_ONTYPE_PROVIDER as any)
+}
+
 @Injectable({ providedIn: "root" })
 export class MonacoEditorService {
     constructor(@Inject(MONACO) private monaco: typeof IMonaco) {}
@@ -28,6 +47,7 @@ export class MonacoEditorService {
             // Load monaco
             window.require(["vs/editor/editor.main"], (required: any) => {
                 globalMonaco = required
+                registerLanguages(required)
                 callback(globalMonaco)
             })
         }

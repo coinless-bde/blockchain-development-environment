@@ -3,25 +3,45 @@ import {
     Component,
     ContentChildren,
     ElementRef,
-    HostBinding,
+    HostBinding, Injectable,
     Input,
     Output,
-    QueryList,
+    QueryList, Renderer2,
     TemplateRef,
     ViewChild,
 } from "@angular/core"
-import { Connect, Effect, Effects, HostEmitter, HostRef, Observe } from "ng-effects"
-import { OptionLike, SelectLike } from "../cdk/interfaces"
+import { Connect, Effect, Effects, HostEmitter, HostRef, Observe, State } from "ng-effects"
+import { FormFieldLike, OptionLike, SelectLike } from "../cdk/interfaces"
 import { Button } from "../cdk/button"
 import { Select } from "../cdk/select"
 import { Dropdown } from "../cdk/dropdown"
-import { Observable } from "rxjs"
-import { distinctUntilChanged, map } from "rxjs/operators"
+import { combineLatest, Observable } from "rxjs"
+import { distinctUntilChanged, map, switchMap, withLatestFrom } from "rxjs/operators"
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms"
+import { EventMap, fromEvents } from "../utils"
+import { FormField } from "../cdk/form-field"
+
+export const selectEvents = {
+    blur: FocusEvent
+}
+
+@Injectable()
+export class SelectEffects {
+    @Effect("width")
+    setWidth(@Observe() observer: Observable<SelectComponent>) {
+        return observer.pipe(
+            map(() => this.elementRef.nativeElement.offsetWidth),
+            distinctUntilChanged()
+        )
+    }
+
+    constructor(private elementRef: ElementRef) {}
+}
 
 @Component({
     selector: "bde-select",
     template: `
-        <bde-select-label [innerHTML]="label"></bde-select-label>
+        <bde-select-label class="label" [innerHTML]="label"></bde-select-label>
 
         <bde-codicon
             class="chevron"
@@ -37,18 +57,25 @@ import { distinctUntilChanged, map } from "rxjs/operators"
     providers: [
         Effects,
         Select,
+        SelectEffects,
         Button,
         Dropdown,
+        FormField,
         {
             provide: SelectLike,
             useExisting: HostRef,
         },
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: SelectComponent,
+            multi: true
+        }
     ],
     host: {
         tabindex: "0",
     },
 })
-export class SelectComponent<T> implements SelectLike<T> {
+export class SelectComponent<T = any> implements SelectLike<T>, FormFieldLike<T> {
     @Input()
     public value?: T
 
@@ -77,31 +104,26 @@ export class SelectComponent<T> implements SelectLike<T> {
     @ViewChild(TemplateRef)
     public template?: TemplateRef<void>
 
-    public label?: string
-
-    public width: number
-
     @Output()
     public readonly valueChange: HostEmitter<T>
 
     @Output()
     public readonly press: HostEmitter<any>
 
-    @Effect("width")
-    setWidth(@Observe() observer: Observable<SelectComponent<any>>) {
-        return observer.pipe(
-            map(() => this.elementRef.nativeElement.offsetWidth),
-            distinctUntilChanged()
-        )
-    }
+    public label: string
+    public width: number
+    public registerOnChange: HostEmitter<(value: any) => any>
+    public registerOnTouched: HostEmitter<Function>
+    public setDisabledState: HostEmitter<boolean>
+    public writeValue: HostEmitter<any>
 
-    constructor(connect: Connect, public elementRef: ElementRef<HTMLElement>) {
+    constructor(connect: Connect) {
         this.disabled = false
         this.expanded = false
         this.options = undefined
         this.value = undefined
         this.template = undefined
-        this.label = undefined
+        this.label = ""
         this.active = false
         this.focus = false
         this.hover = false
@@ -109,6 +131,10 @@ export class SelectComponent<T> implements SelectLike<T> {
         this.placeholder = "Select"
         this.valueChange = new HostEmitter(true)
         this.press = new HostEmitter(true)
+        this.registerOnChange = new HostEmitter()
+        this.registerOnTouched = new HostEmitter()
+        this.setDisabledState = new HostEmitter()
+        this.writeValue = new HostEmitter()
 
         connect(this)
     }

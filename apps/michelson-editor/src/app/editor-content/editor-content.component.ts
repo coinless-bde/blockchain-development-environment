@@ -26,9 +26,9 @@ import { isTruthy } from "../utils"
             <ng-container *ngSwitchDefault>
                 <bde-monaco-editor
                     class="editor"
-                    [document]="editorState.code"
+                    [value]="editorState.code"
                     [language]="editorState.language"
-                    (valueChanges)="valueChanges($event)"
+                    (valueChange)="valueChanges($event)"
                 ></bde-monaco-editor>
             </ng-container>
         </ng-container>

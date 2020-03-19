@@ -3,7 +3,13 @@ import { HttpClient } from "@angular/common/http"
 import { map, mapTo } from "rxjs/operators"
 
 export interface DeployPayload {
-    id: number
+    fileId?: number
+    code?: string
+    networkId: number
+    storage: string
+    contractFee: number
+    storageCap: number
+    gasCap: number
 }
 
 export interface AutosavePayload {

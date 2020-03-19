@@ -55,8 +55,20 @@
     color: var(--color-base-03);
 }
 
-.summaryValue.green {
+.summaryValue.initial {
     color: var(--color-seti-green);
+}
+
+.summaryValue.loading {
+    color: var(--color-seti-yellow);
+}
+
+.summaryValue.success {
+    color: var(--color-seti-blue);
+}
+
+.summaryValue.error {
+    color: var(--color-seti-red);
 }
 
 .section {
@@ -104,4 +116,20 @@
 
 .formField .tzSuffix {
     margin: 0 8px;
+}
+
+.summaryValue.loading:after {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    -webkit-animation: ellipsis steps(4,end) 900ms infinite;
+    animation: ellipsis steps(4,end) 900ms infinite;
+    content: "\2026"; /* ascii code for the ellipsis character */
+    width: 0px;
+}
+
+@keyframes ellipsis {
+    to {
+        width: 1em;
+    }
 }

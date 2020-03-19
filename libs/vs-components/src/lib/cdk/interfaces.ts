@@ -1,5 +1,6 @@
 import { HostEmitter, HostRef } from "ng-effects"
 import { QueryList, TemplateRef } from "@angular/core"
+import { ControlValueAccessor } from "@angular/forms"
 
 export type PressEvent = MouseEvent | KeyboardEvent
 
@@ -38,3 +39,13 @@ export interface DropdownLike<T = void> {
 }
 
 export abstract class DropdownLike<T = void> {}
+
+export interface FormFieldLike<T = any> extends ControlValueAccessor {
+    value?: T
+    valueChange: HostEmitter<T>
+    registerOnChange: HostEmitter<(value: any) => any>
+    registerOnTouched: HostEmitter<Function>
+    setDisabledState: HostEmitter<boolean>
+    writeValue: HostEmitter<any>
+    disabled: boolean
+}

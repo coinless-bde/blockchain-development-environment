@@ -1,8 +1,3 @@
-import { Event } from "../../store/interfaces"
-import { Type } from "@angular/core"
-import { of, OperatorFunction } from "rxjs"
-import { catchError, map } from "rxjs/operators"
-import { Payload } from "../../store/store"
 import { README } from "../editor-content/default-documents/readme"
 import { EXAMPLE } from "../editor-content/default-documents/example"
 
@@ -10,6 +5,62 @@ export interface AppState {
     panes: PanesState
     activeEditor: EditorState
     openTabs: EditorState[]
+    networks: NetworkState[]
+    activeNetwork: number
+    deploy: DeployState
+    deployStatus: DeployStatus
+}
+
+export const DeployStatus = {
+    Initial(): DeployStatus {
+        return {
+            state: "initial",
+            loading: false,
+            success: false,
+            error: null,
+        }
+    }
+}
+
+export type DeployStatus =
+    | {
+    state: "initial"
+    loading: false
+    success: false
+    error: null
+}
+    | {
+    state: "loading"
+    loading: true
+    success: false
+    error: null
+}
+    | {
+    state: "success"
+    loading: false
+    success: true
+    error: null
+}
+    | {
+    state: "error"
+    loading: false
+    success: false
+    error: any
+}
+
+export interface DeployState {
+    fileId?: null | number,
+    code?: null | string,
+    networkId: number
+    storage: string
+    contractFee: number
+    storageCap: number
+    gasCap: number
+}
+
+export interface NetworkState {
+    label: string
+    disabled: boolean
 }
 
 export interface PanesState {
@@ -33,7 +84,7 @@ export const initialState: AppState = {
         title: "",
         code: "",
         language: "plaintext",
-        readonly: false
+        readonly: false,
     },
     openTabs: [
         {
@@ -54,21 +105,39 @@ export const initialState: AppState = {
             language: "plaintext",
             readonly: true,
         },
-    ]
+    ],
+    networks: [
+        {
+            label: "Mainnet (Coming soon)",
+            disabled: true,
+        },
+        {
+            label: "Babylon (deprecated)",
+            disabled: false,
+        },
+        {
+            label: "Carthage",
+            disabled: false,
+        },
+        {
+            label: "Zeronet (Coming soon)",
+            disabled: true,
+        },
+        {
+            label: "Sandbox (Coming soon)",
+            disabled: true,
+        },
+    ],
+    deploy: {
+        fileId: null,
+        code: null,
+        networkId: 2,
+        storage: "",
+        storageCap: 0,
+        contractFee: 0,
+        gasCap: 0,
+    },
+    activeNetwork: 2,
+    deployStatus: DeployStatus.Initial()
 }
 
-export function mapToEvent<T extends Event<any>, V extends Payload<T>>(type: Type<T>): OperatorFunction<V, T> {
-    return function(source) {
-        return source.pipe(
-            map(value => new type(value))
-        )
-    }
-}
-
-export function mapToErrorEvent<T extends Event<any>>(type: Type<T>): OperatorFunction<any, T> {
-    return function(source) {
-        return source.pipe(
-            catchError(value => of(new type(value)))
-        )
-    }
-}
