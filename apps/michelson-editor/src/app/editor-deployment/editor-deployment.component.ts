@@ -87,6 +87,7 @@ export class EditorDeployment {
             <bde-tabs activeTab="2">
                 <bde-tab class="tab" controls="1">History</bde-tab>
                 <ng-template bdeTabPanel="1">
+                    <br/>
                     Coming soon.
                 </ng-template>
 

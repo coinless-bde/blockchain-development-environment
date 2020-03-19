@@ -134,7 +134,7 @@ export class MonacoEditorComponent implements FormFieldLike {
     @Effect()
     resize(@Observe() observer: Observable<any>) {
         return observer.pipe(
-            throttleTime(0)
+            throttleTime(50)
         ).subscribe(() => {
             if (this.instance) {
                 this.instance.layout()
