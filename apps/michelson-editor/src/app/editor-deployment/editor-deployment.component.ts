@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Injectable } from "@angular/core"
 import { Connect, Context, Effect, Effects, HostEmitter, State } from "ng-effects"
-import { FormBuilder, FormGroup } from "@angular/forms"
+import { FormBuilder, FormGroup, Validators } from "@angular/forms"
 import { AppState, DeployStatus, NetworkState } from "../editor-state/state"
 import { Dispatch, Select, select, Store } from "../../store/store"
 import { DeploySmartContract, UpdateDeployState } from "../editor-state/commands"
@@ -50,7 +50,7 @@ export class EditorDeployment {
             <ul class="summary">
                 <li class="summaryItem">
                     <span class="summaryLabel">Network</span>
-                    <span class="summaryValue">Zeronet</span>
+                    <span class="summaryValue">{{networks[model.controls.networkId.value].label}}</span>
                 </li>
                 <li class="summaryItem">
                     <span class="summaryLabel">File</span>
@@ -62,12 +62,16 @@ export class EditorDeployment {
                 </li>
                 <li class="summaryItem">
                     <span class="summaryLabel">Storage</span>
-                    <span class="summaryValue">Configured</span>
+                    <span class="summaryValue" [class.error]="!model.controls.storage.value">
+                        {{ model.controls.storage.value ? "Configured" : "Not Configured"}}
+                    </span>
                 </li>
                 <li class="summaryItem">
                     <span class="summaryLabel">Status</span>
-                    <span class="summaryValue {{deployStatus.state}}" [ngSwitch]="deployStatus.state">
-                        <ng-template ngSwitchCase="initial">Ready to deploy</ng-template>
+                    <span class="summaryValue {{deployStatus.state}}" [class.error]="model.invalid" [ngSwitch]="deployStatus.state">
+                        <ng-template ngSwitchCase="initial">
+                            {{ model.valid ? "Ready to Deploy" : "Invalid Configuration" }}
+                        </ng-template>
                         <ng-template ngSwitchCase="loading">Deploying</ng-template>
                         <ng-template ngSwitchCase="success">Deployed</ng-template>
                         <ng-template ngSwitchCase="error">Error</ng-template>
@@ -160,7 +164,6 @@ export class EditorDeployment {
 })
 export class EditorDeploymentComponent {
     model: FormGroup
-    activeNetwork: number
     networks: NetworkState[]
     deploy: HostEmitter<[FormGroup, DeployStatus]>
     deployStatus: DeployStatus
@@ -170,12 +173,11 @@ export class EditorDeploymentComponent {
             fileId: fb.control(null),
             code: fb.control(null),
             networkId: fb.control(0),
-            storage: fb.control(""),
+            storage: fb.control("", [Validators.required]),
             contractFee: fb.control("0"),
             storageCap: fb.control("0"),
             gasCap: fb.control("0"),
         })
-        this.activeNetwork = 0
         this.networks = []
         this.deploy = new HostEmitter()
         this.deployStatus = DeployStatus.Initial()
