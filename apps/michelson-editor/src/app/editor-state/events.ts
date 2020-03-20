@@ -10,5 +10,5 @@ export class FileAutoSaveError extends Event("FileAutoSaveError")<any> {}
 export class FileLoaded extends Event("FileLoaded")<{ id: number, code: string }> {}
 export class FileLoadError extends Event("FileLoadError")<any> {}
 
-export class SmartContractDeployed extends Event("SmartContractDeployed") {}
+export class SmartContractDeployed extends Event("SmartContractDeployed")<{ hash: string }> {}
 export class SmartContractDeployError extends Event("SmartContractDeployError")<any> {}

@@ -25,6 +25,7 @@ export type DeployStatusState =
     loading: false
     success: true
     error: null
+    hash: string
 }
     | {
     state: "error"

@@ -30,7 +30,7 @@ export function deployStatus(state: DeployStatusState = DeployStatus.Initial(), 
                 error: null,
                 loading: false,
                 success: true,
-
+                hash: action.hash
             }
         }
         case SmartContractDeployError.type: {

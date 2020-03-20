@@ -2,7 +2,6 @@ import { EditorState } from "../state"
 import { Actions } from "../types"
 import { UpdateActiveEditor } from "../commands"
 import { README } from "../../editor-content/default-documents/readme"
-import { EXAMPLE } from "../../editor-content/default-documents/example"
 import { HELLO } from "../../editor-content/default-documents/helloTezos"
 
 const initialState = [

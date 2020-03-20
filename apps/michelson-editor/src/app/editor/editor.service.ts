@@ -73,7 +73,7 @@ export class EditorService {
     public update(payload: UpdatePayload) {
         return this.http.post("/api/update", payload, {
             responseType: "text"
-        }).pipe(mapTo({ id: payload.id }))
+        }).pipe(mapTo({ id: payload.id, code: payload.code }))
     }
 
     public save(payload: SavePayload) {
@@ -82,6 +82,6 @@ export class EditorService {
     }
 
     public deploy(payload: DeployPayload) {
-        return this.http.post("/api/publish", payload)
+        return this.http.post<{ hash: string }>("/api/publish", payload)
     }
 }
