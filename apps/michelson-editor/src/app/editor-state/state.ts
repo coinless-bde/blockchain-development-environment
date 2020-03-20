@@ -1,28 +1,13 @@
-import { README } from "../editor-content/default-documents/readme"
-import { EXAMPLE } from "../editor-content/default-documents/example"
-
 export interface AppState {
     panes: PanesState
     activeEditor: EditorState
     openTabs: EditorState[]
     networks: NetworkState[]
     activeNetwork: number
-    deploy: DeployState
-    deployStatus: DeployStatus
+    deployStatus: DeployStatusState
 }
 
-export const DeployStatus = {
-    Initial(): DeployStatus {
-        return {
-            state: "initial",
-            loading: false,
-            success: false,
-            error: null,
-        }
-    }
-}
-
-export type DeployStatus =
+export type DeployStatusState =
     | {
     state: "initial"
     loading: false
@@ -74,70 +59,3 @@ export interface EditorState {
     language: string
     readonly: boolean
 }
-
-export const initialState: AppState = {
-    panes: {
-        expanded: true,
-    },
-    activeEditor: {
-        id: null,
-        title: "",
-        code: "",
-        language: "plaintext",
-        readonly: false,
-    },
-    openTabs: [
-        {
-            title: "README.md",
-            code: README,
-            language: "markdown",
-            readonly: true,
-        },
-        {
-            title: "example.tz",
-            code: EXAMPLE,
-            language: "michelson",
-            readonly: false,
-        },
-        {
-            title: "Deploy",
-            code: "",
-            language: "plaintext",
-            readonly: true,
-        },
-    ],
-    networks: [
-        {
-            label: "Mainnet (Coming soon)",
-            disabled: true,
-        },
-        {
-            label: "Babylon (deprecated)",
-            disabled: false,
-        },
-        {
-            label: "Carthage",
-            disabled: false,
-        },
-        {
-            label: "Zeronet (Coming soon)",
-            disabled: true,
-        },
-        {
-            label: "Sandbox (Coming soon)",
-            disabled: true,
-        },
-    ],
-    deploy: {
-        fileId: null,
-        code: null,
-        networkId: 2,
-        storage: "",
-        storageCap: 0,
-        contractFee: 0,
-        gasCap: 0,
-    },
-    activeNetwork: 2,
-    deployStatus: DeployStatus.Initial()
-}
-

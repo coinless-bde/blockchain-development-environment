@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component, Injectable } from "@angular/core"
-import { Connect, Context, Effect, Effects, HostEmitter, State } from "ng-effects"
-import { FormBuilder, FormGroup, Validators } from "@angular/forms"
-import { AppState, DeployStatus, NetworkState } from "../editor-state/state"
-import { Dispatch, Select, select, Store } from "../../store/store"
-import { DeploySmartContract, UpdateDeployState } from "../editor-state/commands"
+import { Connect, Effects, HostEmitter, State } from "ng-effects"
+import { FormGroup } from "@angular/forms"
+import { AppState, DeployStatusState, NetworkState } from "../editor-state/state"
+import { Dispatch, Select } from "../../store/store"
+import { DeploySmartContract } from "../editor-state/commands"
 import { filter, map } from "rxjs/operators"
+import { DeployForm } from "../editor-state/forms/deploy"
+import { DeployStatus } from "../editor-state/state/deploy-status"
 
 @Injectable()
 export class EditorDeployment {
@@ -16,20 +18,6 @@ export class EditorDeployment {
         }
     }
 
-    @Effect()
-    mapStateToForm(@Context() context: Context<EditorDeploymentComponent>) {
-        return this.store.pipe(
-            select(store => store.deploy),
-        ).subscribe(model => {
-            context.model.patchValue(model, { emitEvent: false })
-        })
-    }
-
-    @Dispatch(UpdateDeployState)
-    updateDeployState(@Context() context: Context<EditorDeploymentComponent>) {
-        return context.model.valueChanges
-    }
-
     @Dispatch(DeploySmartContract)
     deploySmartContract(state: State<EditorDeploymentComponent>) {
         return state.deploy.pipe(
@@ -38,8 +26,7 @@ export class EditorDeployment {
         )
     }
 
-    constructor(private store: Store<AppState>) {
-    }
+    constructor() {}
 }
 
 @Component({
@@ -68,7 +55,7 @@ export class EditorDeployment {
                 </li>
                 <li class="summaryItem">
                     <span class="summaryLabel">Status</span>
-                    <span class="summaryValue {{deployStatus.state}}" [class.error]="model.invalid" [ngSwitch]="deployStatus.state">
+                    <span class="summaryValue {{deployStatus.state}}" [class.invalid]="model.invalid" [ngSwitch]="deployStatus.state">
                         <ng-template ngSwitchCase="initial">
                             {{ model.valid ? "Ready to Deploy" : "Invalid Configuration" }}
                         </ng-template>
@@ -165,19 +152,11 @@ export class EditorDeployment {
 export class EditorDeploymentComponent {
     model: FormGroup
     networks: NetworkState[]
-    deploy: HostEmitter<[FormGroup, DeployStatus]>
-    deployStatus: DeployStatus
+    deploy: HostEmitter<[FormGroup, DeployStatusState]>
+    deployStatus: DeployStatusState
 
-    constructor(fb: FormBuilder, connect: Connect) {
-        this.model = fb.group({
-            fileId: fb.control(null),
-            code: fb.control(null),
-            networkId: fb.control(0),
-            storage: fb.control("", [Validators.required]),
-            contractFee: fb.control("0"),
-            storageCap: fb.control("0"),
-            gasCap: fb.control("0"),
-        })
+    constructor(form: DeployForm, connect: Connect) {
+        this.model = form.model
         this.networks = []
         this.deploy = new HostEmitter()
         this.deployStatus = DeployStatus.Initial()

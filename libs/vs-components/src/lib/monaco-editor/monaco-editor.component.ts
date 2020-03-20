@@ -11,12 +11,12 @@ import { Connect, Context, Effect, Effects, HostEmitter, Observe, State } from "
 import { editor } from "monaco-editor"
 import { combineLatest, fromEventPattern, Observable } from "rxjs"
 import { isDefined } from "../utils"
-import { filter, map, switchMap, throttleTime } from "rxjs/operators"
+import { debounceTime, filter, map, switchMap, throttleTime } from "rxjs/operators"
 import { IMonaco, MONACO } from "./monaco-editor.service"
-import IStandaloneCodeEditor = editor.IStandaloneCodeEditor
 import { FormFieldLike } from "../cdk/interfaces"
 import { FormField } from "../cdk/form-field"
 import { NG_VALUE_ACCESSOR } from "@angular/forms"
+import IStandaloneCodeEditor = editor.IStandaloneCodeEditor
 
 @Component({
     selector: "bde-monaco-editor",
@@ -84,6 +84,7 @@ export class MonacoEditorComponent implements FormFieldLike {
                     }
                     return fromEventPattern(listen).pipe(map(() => instance.getValue()))
                 }),
+                debounceTime(50),
             )
             .subscribe(this.valueChange)
     }

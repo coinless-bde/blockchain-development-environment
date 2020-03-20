@@ -18,4 +18,4 @@ export class LoadFile extends Command("LoadFile")<{ id: number }> {}
 
 export class ChangeNetwork extends Command("ChangeNetwork")<{ id: number }> {}
 
-export class UpdateDeployState extends Command("UpdateDeploymentSettings")<DeployState> {}
+export class ChangeDeploymentConfig extends Command("ChangeDeploymentConfig")<DeployState> {}

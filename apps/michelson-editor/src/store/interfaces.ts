@@ -1,3 +1,5 @@
+import { Store } from "./store"
+
 export declare type JsonPrimitive = string | number | boolean | null
 export declare type JsonValue = JsonPrimitive | JsonArray | JsonObject | undefined
 export interface JsonArray extends Array<JsonValue> {}
@@ -21,4 +23,8 @@ export abstract class Event<T> {
             Object.assign(this, payload)
         }
     }
+}
+
+export interface StorePlugin {
+    connect(store: Store<any>): any
 }

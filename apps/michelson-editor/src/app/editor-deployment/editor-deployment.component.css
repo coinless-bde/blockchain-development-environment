@@ -67,7 +67,8 @@
     color: var(--color-seti-blue);
 }
 
-.summaryValue.error {
+.summaryValue.error,
+.summaryValue.invalid  {
     color: var(--color-seti-red);
 }
 

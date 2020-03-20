@@ -167,36 +167,38 @@ export function reducerMap(reducers: any) {
 
 export const STATE = new InjectionToken("STATE")
 export const REDUCERS = new InjectionToken("REDUCERS")
+export const PLUGINS = new InjectionToken("PLUGINS")
 
 @Injectable()
 export class Store<T extends {[key: string]: any}> extends Observable<T> implements OnDestroy {
     private subs: Subscription
+    private state: BehaviorSubject<T>
+    private reducers: ReducerMap<T>
 
     dispatch(action: Event) {
         this.dispatcher.next(action)
     }
 
-    constructor(private dispatcher: Dispatcher, @Inject(STATE) initialState: T, @Inject(REDUCERS) reducers: ReducerMap<T>) {
-        super(subscriber => nextState.subscribe(subscriber))
+    constructor(private dispatcher: Dispatcher, @Inject(STATE) initialState: T, @Inject(REDUCERS) reducers: ReducerMap<T>, @Inject(PLUGINS) plugins: any[]) {
+        super(subscriber => this.state.subscribe(subscriber))
 
-        const nextState = new BehaviorSubject(initialState)
+        this.reducers = reducers
         this.subs = new Subscription()
+        this.state = new BehaviorSubject(this.runReducers(initialState))
+
         this.subs.add(
             scheduled(this.dispatcher.pipe(
                 scan<Event, T>((state, action) =>
-                    reducers.reduce((_state, [key, reducer]) => {
-                        _state[key] = reducer(_state[key], action)
-                        return _state
-                    }, state),
+                    this.runReducers(state, action),
                     initialState
                 ),
-            ), queueScheduler).subscribe(nextState)
+            ), queueScheduler).subscribe(this.state)
         )
 
         if (isDevMode()) {
             this.subs.add(
             this.dispatcher.pipe(
-                withLatestFrom(nextState.pipe(
+                withLatestFrom(this.state.pipe(
                     map(value => JSON.parse(JSON.stringify(value))),
                     pairwise()
                 )),
@@ -212,25 +214,48 @@ export class Store<T extends {[key: string]: any}> extends Observable<T> impleme
                 }
             }))
         }
+
+        if (plugins) {
+            for (const plugin of plugins) {
+                plugin.connect(this)
+            }
+        }
+    }
+
+    addReducer(name: string, reducer: (state: T, action: any) => any) {
+        this.reducers.push([name, reducer])
+        const next = this.runReducers(this.state.getValue())
+        this.state.next(next)
     }
 
     ngOnDestroy() {
         this.subs.unsubscribe()
     }
+
+    private runReducers(state: T, action: any = {}): T {
+        return this.reducers.reduce((_state, [key, reducer]) => {
+            _state[key] = reducer(_state[key], action)
+            return _state
+        }, state)
+    }
 }
 
 @NgModule()
 export class StoreModule {
-    static config(reducers: any, initialState: object): ModuleWithProviders<StoreModule> {
+    static config(reducers: any, options?: { plugins?: Type<any>[]}): ModuleWithProviders<StoreModule> {
         return {
             ngModule: StoreModule,
             providers: [
                 {
                     provide: STATE,
-                    useValue: initialState
+                    useValue: {}
                 }, {
                     provide: REDUCERS,
                     useValue: reducerMap(reducers)
+                }, {
+                    provide: PLUGINS,
+                    useFactory: (...deps: any[]) => deps,
+                    deps: options?.plugins || []
                 },
                 Store
             ]
