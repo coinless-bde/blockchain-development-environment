@@ -22,8 +22,7 @@ export function deploy(state: DeployState = initialState, action: Actions): Depl
             return { ...state, networkId: action.id }
         }
         case FileLoaded.type:
-        case FileSaved.type:
-        case UpdateActiveEditor.type: {
+        case FileSaved.type: {
             return { ...state, fileId: action.id, code: action.code }
         }
     }

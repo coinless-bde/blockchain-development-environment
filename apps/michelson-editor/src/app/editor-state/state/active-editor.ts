@@ -22,7 +22,7 @@ export function activeEditor(state: EditorState = initialState, action: Actions)
             break
         }
         case UpdateActiveEditor.type: {
-            return action
+            return {...state, ...action}
         }
     }
     return state
