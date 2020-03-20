@@ -56,7 +56,12 @@ export class EditorService {
     }
 
     public create(payload: CreatePayload) {
-        return this.http.post<CreateResponse>("/api/save", payload)
+        return this.http.post<CreateResponse>("/api/save", payload).pipe(
+            map(res => ({
+                id: res.id,
+                code: payload.code
+            }))
+        )
     }
 
     public autosave(payload: AutosavePayload) {

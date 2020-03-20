@@ -17,7 +17,7 @@ export function activeEditor(state: EditorState = initialState, action: Actions)
         case FileLoaded.type:
         case FileSaved.type: {
             if (action.id === state.id) {
-                Object.assign(state, action)
+                return Object.assign(state, action)
             }
             break
         }

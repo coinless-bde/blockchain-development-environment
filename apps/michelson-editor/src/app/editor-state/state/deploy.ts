@@ -1,6 +1,7 @@
 import { DeployState } from "../state"
 import { Actions } from "../types"
 import { ChangeNetwork, UpdateActiveEditor, ChangeDeploymentConfig } from "../commands"
+import { FileLoaded, FileSaved } from "../events"
 
 const initialState = {
     fileId: null,
@@ -20,6 +21,8 @@ export function deploy(state: DeployState = initialState, action: Actions): Depl
         case ChangeNetwork.type: {
             return { ...state, networkId: action.id }
         }
+        case FileLoaded.type:
+        case FileSaved.type:
         case UpdateActiveEditor.type: {
             return { ...state, fileId: action.id, code: action.code }
         }

@@ -1,7 +1,6 @@
 import { EditorState } from "../state"
 import { Actions } from "../types"
 import { UpdateActiveEditor } from "../commands"
-import { FileLoaded } from "../events"
 import { README } from "../../editor-content/default-documents/readme"
 import { EXAMPLE } from "../../editor-content/default-documents/example"
 
@@ -34,9 +33,6 @@ export function openTabs(state: EditorState[] = initialState, action: Actions): 
                 Object.assign(activeFile, action)
             }
             break
-        }
-        case FileLoaded.type: {
-            state[1] = { ...state[1], ...action }
         }
     }
     return state

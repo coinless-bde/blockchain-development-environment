@@ -1,7 +1,7 @@
 import { Event } from "../../store/store"
 import { CreateResponse } from "../editor/editor.service"
 
-export class FileSaved extends Event("FileSaved")<CreateResponse> {}
+export class FileSaved extends Event("FileSaved")<{ id: number, code: string}> {}
 export class FileSaveError extends Event("FileSaveError")<any> {}
 
 export class FileAutoSaved extends Event("FileAutoSaved") {}
