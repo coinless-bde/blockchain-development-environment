@@ -60,7 +60,7 @@ export class EditorDeployment {
                             {{ model.valid ? "Ready to Deploy" : "Invalid Configuration" }}
                         </ng-template>
                         <ng-template ngSwitchCase="loading">Deploying</ng-template>
-                        <ng-template ngSwitchCase="success">Deployed: <a href="https://better-call.dev/carthage/{{deployStatus.hash}}"></a></ng-template>
+                        <ng-template ngSwitchCase="success">Deployed: <a href="https://better-call.dev/carthage/{{deployStatus.hash}}">View contract</a></ng-template>
                         <ng-template ngSwitchCase="error">Error</ng-template>
                     </span>
                 </li>
