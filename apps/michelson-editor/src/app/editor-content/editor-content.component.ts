@@ -55,7 +55,7 @@ export class EditorContentComponent {
         private renderer: Renderer2,
     ) {
         this.tabs = []
-        this.selected = 2
+        this.selected = 1
         this.editorState = this.tabs[this.selected]
         this.saveAction = new Subject()
         this.autoSave = new Subject()

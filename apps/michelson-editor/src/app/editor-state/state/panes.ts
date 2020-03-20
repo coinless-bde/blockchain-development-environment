@@ -3,7 +3,7 @@ import { Actions } from "../types"
 import { TogglePreview } from "../commands"
 
 const initialState = {
-    expanded: true,
+    expanded: false,
 }
 
 export function panes(state: PanesState = initialState, action: Actions): PanesState {
