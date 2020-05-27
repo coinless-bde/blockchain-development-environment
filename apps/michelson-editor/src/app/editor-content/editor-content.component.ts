@@ -61,6 +61,8 @@ export class EditorContentComponent {
         this.autoSave = new Subject()
         this.valueChanges = new HostEmitter()
         connect(this)
+
+        this.store.dispatch(new SaveFile(this.editorState))
     }
 
     @Dispatch(AutoSaveFile)

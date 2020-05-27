@@ -3,7 +3,7 @@ import { Connect, Effects, HostEmitter, State } from "ng-effects"
 import { FormGroup } from "@angular/forms"
 import { AppState, DeployStatusState, NetworkState } from "../editor-state/state"
 import { Dispatch, Select } from "../../store/store"
-import { DeploySmartContract } from "../editor-state/commands"
+import { DeploySmartContract, SaveFile } from "../editor-state/commands"
 import { filter, map } from "rxjs/operators"
 import { DeployForm } from "../editor-state/forms/deploy"
 import { DeployStatus } from "../editor-state/state/deploy-status"
@@ -60,7 +60,7 @@ export class EditorDeployment {
                             {{ model.valid ? "Ready to Deploy" : "Invalid Configuration" }}
                         </ng-template>
                         <ng-template ngSwitchCase="loading">Deploying</ng-template>
-                        <ng-template ngSwitchCase="success">Deployed: <a href="https://better-call.dev/carthage/{{deployStatus.hash}}">View contract</a></ng-template>
+                        <ng-template ngSwitchCase="success">Deployed: <a href="https://you.better-call.dev/carthage/{{deployStatus.hash}}">View contract</a></ng-template>
                         <ng-template ngSwitchCase="error">Error</ng-template>
                     </span>
                 </li>
@@ -113,7 +113,8 @@ export class EditorDeployment {
                                 <bde-monaco-editor
                                     class="formFieldMonacoEditor"
                                     formControlName="storage"
-                                ></bde-monaco-editor>
+                                    language="michelson"
+></bde-monaco-editor>
                             </bde-form-field>
 
                             <h3>Advanced</h3>
